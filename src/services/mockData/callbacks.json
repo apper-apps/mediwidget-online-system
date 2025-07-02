@@ -1,0 +1,68 @@
+[
+  {
+    "Id": 1,
+    "name": "Maria Schmidt",
+    "phone": "+49 30 12345678",
+    "email": "maria.schmidt@email.de",
+    "reason": "appointment",
+    "message": "Ich benötige einen Termin für eine Routineuntersuchung",
+    "status": "pending",
+    "createdAt": "2024-01-15T09:30:00Z",
+    "updatedAt": "2024-01-15T09:30:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Thomas Müller",
+    "phone": "+49 89 98765432",
+    "email": "t.mueller@email.de",
+    "reason": "emergency",
+    "message": "Starke Schmerzen seit heute Morgen",
+    "status": "completed",
+    "createdAt": "2024-01-14T14:20:00Z",
+    "updatedAt": "2024-01-14T15:45:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Anna Weber",
+    "phone": "+49 40 55544433",
+    "email": "anna.weber@email.de",
+    "reason": "results",
+    "message": "Wann sind meine Laborergebnisse verfügbar?",
+    "status": "in-progress",
+    "createdAt": "2024-01-13T11:15:00Z",
+    "updatedAt": "2024-01-13T16:30:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "Klaus Becker",
+    "phone": "+49 221 77788899",
+    "email": "",
+    "reason": "prescription",
+    "message": "Rezept für Blutdruckmedikament abholen",
+    "status": "pending",
+    "createdAt": "2024-01-12T08:45:00Z",
+    "updatedAt": "2024-01-12T08:45:00Z"
+  },
+  {
+    "Id": 5,
+    "name": "Petra Hoffmann",
+    "phone": "+49 711 33322211",
+    "email": "p.hoffmann@email.de",
+    "reason": "question",
+    "message": "Frage zur Impfung - welche Unterlagen benötige ich?",
+    "status": "completed",
+    "createdAt": "2024-01-11T16:20:00Z",
+    "updatedAt": "2024-01-11T17:10:00Z"
+  },
+  {
+    "Id": 6,
+    "name": "Michael Wagner",
+    "phone": "+49 69 44455566",
+    "email": "m.wagner@email.de",
+    "reason": "appointment",
+    "message": "",
+    "status": "cancelled",
+    "createdAt": "2024-01-10T13:30:00Z",
+    "updatedAt": "2024-01-10T14:00:00Z"
+  }
+]

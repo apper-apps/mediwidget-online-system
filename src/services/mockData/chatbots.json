@@ -1,0 +1,150 @@
+[
+  {
+    "Id": 1,
+    "name": "Allgemeine Praxishilfe",
+    "description": "Hilft Patienten bei häufigen Fragen zu Terminen und Sprechzeiten",
+    "status": "active",
+    "type": "general",
+    "flows": [
+      {
+        "id": "welcome",
+        "name": "Begrüßung",
+        "trigger": "start",
+        "responses": [
+          "Hallo! Ich bin Ihr digitaler Praxisassistent. Wie kann ich Ihnen helfen?",
+          "Willkommen in unserer Praxis! Was kann ich für Sie tun?"
+        ],
+        "options": [
+          { "text": "Termin vereinbaren", "next": "appointment" },
+          { "text": "Sprechzeiten", "next": "hours" },
+          { "text": "Kontakt", "next": "contact" }
+        ]
+      },
+      {
+        "id": "appointment",
+        "name": "Terminvereinbarung",
+        "trigger": "appointment",
+        "responses": [
+          "Für Terminvereinbarungen rufen Sie bitte unter +49 30 12345678 an oder nutzen Sie unser Online-Buchungssystem."
+        ],
+        "options": [
+          { "text": "Zurück zum Hauptmenü", "next": "welcome" },
+          { "text": "Sprechzeiten anzeigen", "next": "hours" }
+        ]
+      },
+      {
+        "id": "hours",
+        "name": "Sprechzeiten",
+        "trigger": "hours",
+        "responses": [
+          "Unsere Sprechzeiten:\nMo-Fr: 8:00-12:00 und 15:00-18:00\nSa: 9:00-12:00"
+        ],
+        "options": [
+          { "text": "Termin vereinbaren", "next": "appointment" },
+          { "text": "Zurück zum Hauptmenü", "next": "welcome" }
+        ]
+      }
+    ],
+    "settings": {
+      "welcomeMessage": "Hallo! Wie kann ich Ihnen helfen?",
+      "fallbackMessage": "Das habe ich nicht verstanden. Können Sie das anders formulieren?",
+      "handoffMessage": "Einen Moment, ich verbinde Sie mit einem Mitarbeiter.",
+      "theme": "medical",
+      "language": "de"
+    },
+    "createdAt": "2024-01-01T10:00:00Z",
+    "updatedAt": "2024-01-15T14:30:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Notfall-Assistent",
+    "description": "Leitet Notfallpatienten schnell an die richtige Stelle weiter",
+    "status": "active",
+    "type": "emergency",
+    "flows": [
+      {
+        "id": "emergency_check",
+        "name": "Notfall-Prüfung",
+        "trigger": "start",
+        "responses": [
+          "⚠️ Haben Sie einen medizinischen Notfall?"
+        ],
+        "options": [
+          { "text": "Ja, Notfall!", "next": "emergency_action" },
+          { "text": "Nein, normale Anfrage", "next": "normal_help" }
+        ]
+      },
+      {
+        "id": "emergency_action",
+        "name": "Notfall-Weiterleitung",
+        "trigger": "emergency",
+        "responses": [
+          "🚨 Bei lebensbedrohlichen Notfällen wählen Sie sofort 112!\n\nFür dringende medizinische Fragen außerhalb unserer Sprechzeiten:\n📞 Ärztlicher Bereitschaftsdienst: 116117"
+        ],
+        "options": []
+      },
+      {
+        "id": "normal_help",
+        "name": "Normale Hilfe",
+        "trigger": "normal",
+        "responses": [
+          "Wie kann ich Ihnen bei Ihrer Anfrage helfen?"
+        ],
+        "options": [
+          { "text": "Termin vereinbaren", "next": "appointment" },
+          { "text": "Sprechzeiten", "next": "hours" }
+        ]
+      }
+    ],
+    "settings": {
+      "welcomeMessage": "Notfall-Assistent - Wie kann ich helfen?",
+      "fallbackMessage": "Bei Notfällen wählen Sie 112!",
+      "theme": "emergency",
+      "language": "de"
+    },
+    "createdAt": "2024-01-05T09:00:00Z",
+    "updatedAt": "2024-01-12T11:20:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Impf-Information",
+    "description": "Informiert über verfügbare Impfungen und Termine",
+    "status": "draft",
+    "type": "specialized",
+    "flows": [
+      {
+        "id": "vaccine_info",
+        "name": "Impf-Informationen",
+        "trigger": "start",
+        "responses": [
+          "Welche Informationen zu Impfungen benötigen Sie?"
+        ],
+        "options": [
+          { "text": "COVID-19 Impfung", "next": "covid_info" },
+          { "text": "Grippe-Impfung", "next": "flu_info" },
+          { "text": "Reise-Impfungen", "next": "travel_info" },
+          { "text": "Impftermin buchen", "next": "vaccine_appointment" }
+        ]
+      },
+      {
+        "id": "covid_info",
+        "name": "COVID-19 Info",
+        "trigger": "covid",
+        "responses": [
+          "COVID-19 Impfungen sind verfügbar. Bringen Sie bitte Ihren Impfpass und Personalausweis mit."
+        ],
+        "options": [
+          { "text": "Termin buchen", "next": "vaccine_appointment" },
+          { "text": "Zurück", "next": "vaccine_info" }
+        ]
+      }
+    ],
+    "settings": {
+      "welcomeMessage": "Impf-Informationen - Wie kann ich helfen?",
+      "theme": "health",
+      "language": "de"
+    },
+    "createdAt": "2024-01-10T15:30:00Z",
+    "updatedAt": "2024-01-10T15:30:00Z"
+  }
+]
