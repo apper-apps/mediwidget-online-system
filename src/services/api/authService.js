@@ -26,18 +26,28 @@ const TOKEN_KEY = 'mediwidget_auth_token'
 const USER_KEY = 'mediwidget_current_user'
 
 export const authService = {
-  async register(userData) {
+async register(registrationData) {
     await delay(400)
     
-    const { email, password, firstName, lastName, practiceName } = userData
+    // Ensure registrationData is an object
+    if (!registrationData || typeof registrationData !== 'object') {
+      throw new Error('Ungültige Registrierungsdaten')
+    }
+    
+    const { email, password, firstName, lastName, practiceName } = registrationData
     
     // Validate required fields
     if (!email || !password || !firstName || !lastName || !practiceName) {
       throw new Error('Alle Felder sind erforderlich')
     }
     
+    // Ensure userData array exists and is valid
+    if (!Array.isArray(userData)) {
+      throw new Error('Benutzerdaten nicht verfügbar')
+    }
+    
     // Check if email already exists
-    if (userData.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+    if (userData.find(u => u?.email?.toLowerCase() === email.toLowerCase())) {
       throw new Error('E-Mail-Adresse bereits registriert')
     }
     
