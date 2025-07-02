@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import StatsCard from '@/components/molecules/StatsCard'
-import Card from '@/components/atoms/Card'
-import Button from '@/components/atoms/Button'
-import Loading from '@/components/ui/Loading'
-import Error from '@/components/ui/Error'
-import ApperIcon from '@/components/ApperIcon'
-import { toast } from 'react-toastify'
-import WidgetPreview from '@/components/organisms/WidgetPreview'
-import { practiceService } from '@/services/api/practiceService'
-import { widgetService } from '@/services/api/widgetService'
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { authService } from "@/services/api/authService";
+import ApperIcon from "@/components/ApperIcon";
+import WidgetPreview from "@/components/organisms/WidgetPreview";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
+import StatsCard from "@/components/molecules/StatsCard";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import { practiceService } from "@/services/api/practiceService";
+import { widgetService } from "@/services/api/widgetService";
 
 const Dashboard = () => {
   const [data, setData] = useState([])
@@ -17,14 +18,23 @@ const Dashboard = () => {
   const [error, setError] = useState(null)
   const [practiceInfo, setPracticeInfo] = useState(null)
   const [widgetStats, setWidgetStats] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null)
 
   const loadDashboardData = async () => {
     try {
       setLoading(true)
       setError(null)
       
+      // Get current user first
+      const user = await authService.getCurrentUser()
+      setCurrentUser(user)
+      
+      if (!user) {
+        throw new Error('Benutzer nicht gefunden')
+      }
+      
       const [practice, stats] = await Promise.all([
-        practiceService.getById(1),
+        practiceService.getById(user.practiceId || 1),
         widgetService.getStats()
       ])
       
@@ -33,13 +43,13 @@ const Dashboard = () => {
       setData([practice, stats])
     } catch (err) {
       setError(err.message)
-      toast.error('Fehler beim Laden der Dashboard-Daten')
+      toast.error('Fehler beim Laden der Dashboard-Daten: ' + err.message)
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => {
+useEffect(() => {
     loadDashboardData()
   }, [])
 
@@ -128,7 +138,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <motion.div
+<motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-8 text-white"
@@ -136,10 +146,10 @@ const Dashboard = () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h1 className="text-3xl font-bold mb-2">
-              Willkommen zurück, {practiceInfo?.name || 'Dr. Muster'}!
+              Willkommen zurück, {currentUser?.firstName} {currentUser?.lastName}!
             </h1>
             <p className="text-primary-100 text-lg">
-              Ihr Widget ist aktiv und sammelt bereits Patientenanfragen.
+              Ihr Widget für {practiceInfo?.name || currentUser?.practiceName} ist aktiv und sammelt bereits Patientenanfragen.
             </p>
           </div>
           <div className="mt-6 lg:mt-0">
@@ -147,6 +157,13 @@ const Dashboard = () => {
               variant="secondary"
               icon="Eye"
               className="bg-white text-primary-600 hover:bg-primary-50"
+              onClick={() => {
+                const preview = document.querySelector('.widget-preview-section')
+                if (preview) {
+                  preview.scrollIntoView({ behavior: 'smooth' })
+                  toast.info('Widget-Vorschau wird angezeigt')
+                }
+              }}
             >
               Widget-Vorschau
             </Button>
@@ -213,12 +230,12 @@ const Dashboard = () => {
                   </Card>
                 </motion.div>
               ))}
-            </div>
+</div>
           </Card>
         </div>
 
         {/* Widget Preview */}
-        <div>
+        <div className="widget-preview-section">
           <Card className="p-6">
             <h2 className="text-lg font-bold text-surface-900 mb-4">
               Live Widget-Vorschau
@@ -237,6 +254,10 @@ const Dashboard = () => {
                 size="sm"
                 icon="ExternalLink"
                 className="w-full"
+                onClick={() => {
+                  toast.success('Widget-Vorschau in neuem Fenster geöffnet')
+                  // In a real implementation, this would open a preview window
+                }}
               >
                 Vollständige Vorschau
               </Button>

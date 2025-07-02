@@ -9,8 +9,13 @@ export const callbackService = {
     return [...callbackData]
   },
 
-  async getById(id) {
+async getById(id) {
     await delay(200)
+    
+    if (!id || isNaN(parseInt(id))) {
+      throw new Error('Ungültige Rückruf-ID')
+    }
+    
     const callback = callbackData.find(c => c.Id === parseInt(id))
     if (!callback) {
       throw new Error('Rückruf-Anfrage nicht gefunden')
@@ -18,8 +23,13 @@ export const callbackService = {
     return { ...callback }
   },
 
-  async create(callbackInfo) {
+async create(callbackInfo) {
     await delay(400)
+    
+    if (!callbackInfo.name || !callbackInfo.phone) {
+      throw new Error('Name und Telefonnummer sind erforderlich')
+    }
+    
     const newId = Math.max(...callbackData.map(c => c.Id)) + 1
     const newCallback = {
       Id: newId,

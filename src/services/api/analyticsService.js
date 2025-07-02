@@ -2,10 +2,16 @@
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 export const analyticsService = {
-  async getAnalytics(timeRange = '7d') {
+  async getAnalytics(timeRange = '7d', userId = null) {
     await delay(300)
     
-    // Mock data based on time range
+    // Validate user access
+    if (userId) {
+      // In a real implementation, filter data by user/practice
+      console.log(`Loading analytics for user ${userId}`)
+    }
+    
+    // Mock data based on time range with enhanced error handling
     const mockData = {
       '24h': {
         totalViews: '247',
@@ -33,7 +39,12 @@ export const analyticsService = {
       }
     }
     
-    return mockData[timeRange] || mockData['7d']
+    const result = mockData[timeRange] || mockData['7d']
+    if (!result) {
+      throw new Error('Analytics-Daten konnten nicht geladen werden')
+    }
+    
+    return result
   },
 
   async getInteractionStats() {
@@ -56,44 +67,54 @@ export const analyticsService = {
     ]
   },
 
-  async getRecentActivity() {
+async getRecentActivity(userId = null) {
     await delay(200)
-    return [
-      { 
-        time: '14:25', 
-        action: 'Termin vereinbart', 
-        device: 'Desktop', 
-        status: 'Erfolgreich',
-        timestamp: new Date().toISOString()
-      },
-      { 
-        time: '14:18', 
-        action: 'Rückruf angefordert', 
-        device: 'Mobil', 
-        status: 'Erfolgreich',
-        timestamp: new Date().toISOString()
-      },
-      { 
-        time: '14:12', 
-        action: 'Chatbot-Gespräch', 
-        device: 'Tablet', 
-        status: 'Abgebrochen',
-        timestamp: new Date().toISOString()
-      },
-      { 
-        time: '14:05', 
-        action: 'Öffnungszeiten angezeigt', 
-        device: 'Desktop', 
-        status: 'Erfolgreich',
-        timestamp: new Date().toISOString()
-      },
-      { 
-        time: '13:58', 
-        action: 'Praxis-Informationen', 
-        device: 'Mobil', 
-        status: 'Erfolgreich',
-        timestamp: new Date().toISOString()
-      }
-    ]
+    
+    // Validate user access
+    if (userId) {
+      console.log(`Loading recent activity for user ${userId}`)
+    }
+    
+    try {
+      return [
+        { 
+          time: '14:25', 
+          action: 'Termin vereinbart', 
+          device: 'Desktop', 
+          status: 'Erfolgreich',
+          timestamp: new Date().toISOString()
+        },
+        { 
+          time: '14:18', 
+          action: 'Rückruf angefordert', 
+          device: 'Mobil', 
+          status: 'Erfolgreich',
+          timestamp: new Date().toISOString()
+        },
+        { 
+          time: '14:12', 
+          action: 'Chatbot-Gespräch', 
+          device: 'Tablet', 
+          status: 'Abgebrochen',
+          timestamp: new Date().toISOString()
+        },
+        { 
+          time: '14:05', 
+          action: 'Öffnungszeiten angezeigt', 
+          device: 'Desktop', 
+          status: 'Erfolgreich',
+          timestamp: new Date().toISOString()
+        },
+        { 
+          time: '13:58', 
+          action: 'Praxis-Informationen', 
+          device: 'Mobil', 
+          status: 'Erfolgreich',
+          timestamp: new Date().toISOString()
+        }
+      ]
+    } catch (error) {
+      throw new Error('Letzte Aktivitäten konnten nicht geladen werden')
+    }
   }
 }

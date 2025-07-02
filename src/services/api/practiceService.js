@@ -9,8 +9,13 @@ export const practiceService = {
     return [...practiceData]
   },
 
-  async getById(id) {
+async getById(id) {
     await delay(200)
+    
+    if (!id || isNaN(parseInt(id))) {
+      throw new Error('Ungültige Praxis-ID')
+    }
+    
     const practice = practiceData.find(p => p.Id === parseInt(id))
     if (!practice) {
       throw new Error('Praxis nicht gefunden')
@@ -30,11 +35,21 @@ export const practiceService = {
     return { ...newPractice }
   },
 
-  async update(id, updates) {
+async update(id, updates) {
     await delay(350)
+    
+    if (!id || isNaN(parseInt(id))) {
+      throw new Error('Ungültige Praxis-ID')
+    }
+    
     const index = practiceData.findIndex(p => p.Id === parseInt(id))
     if (index === -1) {
       throw new Error('Praxis nicht gefunden')
+    }
+    
+    // Validate required fields if provided
+    if (updates.name && updates.name.trim().length < 2) {
+      throw new Error('Praxis-Name muss mindestens 2 Zeichen lang sein')
     }
     
     practiceData[index] = {

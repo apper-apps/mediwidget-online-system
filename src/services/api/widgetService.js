@@ -58,28 +58,50 @@ export const widgetService = {
     return { ...deleted }
   },
 
-  async getStats() {
+async getStats(userId = null) {
     await delay(200)
-    return {
-      views: '2,547',
-      appointments: '189',
-      callbacks: '156',
-      chats: '432',
-      conversions: '189',
-      conversionRate: '7.4%'
+    
+    try {
+      // In a real implementation, filter stats by user/practice
+      if (userId) {
+        console.log(`Loading widget stats for user ${userId}`)
+      }
+      
+      const stats = {
+        views: '2,547',
+        appointments: '189',
+        callbacks: '156',
+        chats: '432',
+        conversions: '189',
+        conversionRate: '7.4%'
+      }
+      
+      // Validate that all required stats are present
+      if (!stats.views || !stats.appointments) {
+        throw new Error('Unvollständige Widget-Statistiken')
+      }
+      
+      return stats
+    } catch (error) {
+      throw new Error('Widget-Statistiken konnten nicht geladen werden: ' + error.message)
     }
   },
 
-  async getEmbedCode() {
+async getEmbedCode(practiceId = 1) {
     await delay(150)
+    
+    if (!practiceId || isNaN(parseInt(practiceId))) {
+      throw new Error('Ungültige Praxis-ID für Embed-Code')
+    }
+    
     return `<!-- MediWidget Pro -->
 <div id="mediwidget-container"></div>
 <script>
   (function() {
     var script = document.createElement('script');
     script.src = 'https://widgets.mediwidget.pro/embed.js';
-    script.setAttribute('data-widget-id', 'YOUR_WIDGET_ID');
-    script.setAttribute('data-practice-id', '1');
+    script.setAttribute('data-widget-id', 'widget_${practiceId}');
+    script.setAttribute('data-practice-id', '${practiceId}');
     document.head.appendChild(script);
   })();
 </script>`

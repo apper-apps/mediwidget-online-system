@@ -10,13 +10,25 @@ import CallbackSetup from '@/components/pages/CallbackSetup'
 import ChatbotBuilder from '@/components/pages/ChatbotBuilder'
 import Analytics from '@/components/pages/Analytics'
 import EmbedInstall from '@/components/pages/EmbedInstall'
+import Login from '@/components/pages/Login'
+import Register from '@/components/pages/Register'
+import ProtectedRoute from '@/components/ProtectedRoute'
 
 function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-surface-100">
         <Routes>
-          <Route path="/" element={<Layout />}>
+          {/* Public Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          
+          {/* Protected Routes */}
+          <Route path="/" element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }>
             <Route index element={<Dashboard />} />
             <Route path="widget-settings" element={<WidgetSettings />} />
             <Route path="practice-info" element={<PracticeInfo />} />
