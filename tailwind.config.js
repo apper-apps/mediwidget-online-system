@@ -55,10 +55,11 @@ export default {
           800: '#334155',
           900: '#1E293B'
         },
-        success: '#00A878',
+success: '#00A878',
         warning: '#FFB800',
         error: '#DC3545',
-        info: '#17A2B8'
+        info: '#17A2B8',
+        border: '#E2E8F0'
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
