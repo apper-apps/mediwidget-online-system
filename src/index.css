@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'react-toastify/dist/ReactToastify.css';
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-surface-100 text-surface-900 font-sans;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-white hover:bg-surface-50 text-surface-700 font-medium py-2.5 px-4 rounded-lg border border-surface-300 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-md;
+  }
+  
+  .btn-accent {
+    @apply bg-accent-500 hover:bg-accent-600 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-lg;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-surface-200 hover:shadow-md transition-shadow duration-200;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2.5 border border-surface-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200;
+  }
+  
+  .nav-link {
+    @apply flex items-center px-4 py-2.5 text-surface-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200 font-medium;
+  }
+  
+  .nav-link.active {
+    @apply text-primary-600 bg-primary-50;
+  }
+  
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-badge.active {
+    @apply bg-accent-100 text-accent-800;
+  }
+  
+  .status-badge.inactive {
+    @apply bg-surface-100 text-surface-600;
+  }
+}
+
+/* Toast Overrides */
+.Toastify__toast-container {
+  @apply top-4 right-4;
+  width: 320px;
+}
+
+.Toastify__toast {
+  @apply rounded-lg shadow-lg;
+  min-height: 64px;
+  padding: 12px 16px;
+}
+
+.Toastify__toast--success {
+  @apply bg-white border-l-4 border-accent-500;
+}
+
+.Toastify__toast--error {
+  @apply bg-white border-l-4 border-red-500;
+}
+
+.Toastify__toast--info {
+  @apply bg-white border-l-4 border-primary-500;
+}
+
+.Toastify__toast--warning {
+  @apply bg-white border-l-4 border-yellow-500;
+}
+
+.Toastify__toast-body {
+  @apply text-surface-800 font-medium;
+  padding: 0;
+  margin: 0;
+}
+
+.Toastify__progress-bar {
+  @apply bg-primary-500;
+}
+
+/* Widget Preview Styles */
+.widget-preview {
+  @apply bg-white rounded-lg shadow-xl border border-surface-200 overflow-hidden;
+  max-width: 400px;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.widget-header {
+  @apply px-4 py-3 border-b border-surface-200 flex items-center justify-between;
+}
+
+.widget-content {
+  @apply p-4 space-y-4;
+}
+
+.widget-hours {
+  @apply text-sm text-surface-600;
+}
+
+.widget-chat {
+  @apply bg-surface-50 rounded-lg p-3 text-sm;
+}
+
+.widget-button {
+  @apply w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-colors duration-200;
+}
+
+.widget-button.primary {
+  @apply bg-primary-500 hover:bg-primary-600 text-white;
+}
+
+.widget-button.secondary {
+  @apply bg-surface-100 hover:bg-surface-200 text-surface-700;
+}
+
+/* Form Field Styles */
+.form-group {
+  @apply space-y-2;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-surface-700 mb-1;
+}
+
+.form-input {
+  @apply input-field;
+}
+
+.form-textarea {
+  @apply input-field resize-none;
+}
+
+.form-select {
+  @apply input-field pr-10 bg-white;
+}
+
+/* Color Picker Styles */
+.color-picker-grid {
+  @apply grid grid-cols-6 gap-2;
+}
+
+.color-option {
+  @apply w-8 h-8 rounded-lg border-2 border-surface-200 cursor-pointer transition-all duration-200 hover:scale-110;
+}
+
+.color-option.selected {
+  @apply border-surface-900 shadow-md;
+}
+
+/* Hours Editor Styles */
+.hours-grid {
+  @apply grid grid-cols-8 gap-1 text-sm;
+}
+
+.hours-cell {
+  @apply p-2 text-center border border-surface-200 hover:bg-surface-50 cursor-pointer transition-colors duration-200;
+}
+
+.hours-cell.header {
+  @apply bg-surface-100 font-medium cursor-default;
+}
+
+.hours-cell.selected {
+  @apply bg-primary-500 text-white;
+}
+
+.hours-cell.disabled {
+  @apply bg-surface-50 text-surface-400 cursor-not-allowed;
+}
+
+/* Chatbot Flow Styles */
+.flow-node {
+  @apply bg-white rounded-lg border border-surface-300 p-4 shadow-sm cursor-pointer transition-all duration-200 hover:shadow-md;
+}
+
+.flow-node.selected {
+  @apply border-primary-500 shadow-md;
+}
+
+.flow-connector {
+  @apply absolute w-0.5 bg-surface-300;
+}
+
+/* Code Snippet Styles */
+.code-block {
+  @apply bg-surface-900 text-surface-100 p-4 rounded-lg font-mono text-sm overflow-x-auto;
+}
+
+.code-block code {
+  @apply text-accent-400;
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .mobile-stack {
+    @apply flex-col;
+  }
+  
+  .mobile-full {
+    @apply w-full;
+  }
+  
+  .mobile-hide {
+    @apply hidden;
+  }
+}

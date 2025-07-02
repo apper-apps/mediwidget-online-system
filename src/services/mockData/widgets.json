@@ -1,0 +1,40 @@
+[
+  {
+    "Id": 1,
+    "practiceId": "1",
+    "embedCode": "<script src=\"https://widgets.mediwidget.pro/embed.js\" data-widget-id=\"1\" data-practice-id=\"1\"></script>",
+    "isActive": true,
+    "config": {
+      "showChatbot": true,
+      "showCallback": true,
+      "showAppointment": true,
+      "showOpeningHours": true,
+      "theme": "light",
+      "position": "bottom-right",
+      "size": "medium",
+      "borderRadius": "rounded",
+      "animation": "slide"
+    },
+    "createdAt": "2024-01-15T08:30:00Z",
+    "updatedAt": "2024-01-20T15:00:00Z"
+  },
+  {
+    "Id": 2,
+    "practiceId": "2",
+    "embedCode": "<script src=\"https://widgets.mediwidget.pro/embed.js\" data-widget-id=\"2\" data-practice-id=\"2\"></script>",
+    "isActive": true,
+    "config": {
+      "showChatbot": true,
+      "showCallback": true,
+      "showAppointment": true,
+      "showOpeningHours": true,
+      "theme": "light",
+      "position": "bottom-left",
+      "size": "large",
+      "borderRadius": "rounded",
+      "animation": "fade"
+    },
+    "createdAt": "2024-01-10T10:00:00Z",
+    "updatedAt": "2024-01-18T17:00:00Z"
+  }
+]

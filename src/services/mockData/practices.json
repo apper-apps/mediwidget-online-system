@@ -1,0 +1,30 @@
+[
+  {
+    "Id": 1,
+    "name": "Dr. Müller Hausarztpraxis",
+    "logo": "",
+    "primaryColor": "#0066CC",
+    "secondaryColor": "#E8F2FF",
+    "contactEmail": "praxis@dr-mueller.de",
+    "contactPhone": "+49 30 12345678",
+    "address": "Musterstraße 123, 10115 Berlin",
+    "website": "https://www.dr-mueller-praxis.de",
+    "description": "Ihre vertrauensvolle Hausarztpraxis im Herzen von Berlin. Wir bieten umfassende medizinische Betreuung für die ganze Familie.",
+    "createdAt": "2024-01-15T08:00:00Z",
+    "updatedAt": "2024-01-20T14:30:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Zahnarztpraxis Dr. Schmidt",
+    "logo": "",
+    "primaryColor": "#00A878",
+    "secondaryColor": "#E6F7F3",
+    "contactEmail": "info@zahnarzt-schmidt.de",
+    "contactPhone": "+49 40 98765432",
+    "address": "Dental-Straße 45, 20095 Hamburg",
+    "website": "https://www.zahnarzt-schmidt.de",
+    "description": "Moderne Zahnmedizin mit Fokus auf Prophylaxe und ästhetische Behandlungen. Ihr Lächeln ist unser Ziel.",
+    "createdAt": "2024-01-10T09:15:00Z",
+    "updatedAt": "2024-01-18T16:45:00Z"
+  }
+]
