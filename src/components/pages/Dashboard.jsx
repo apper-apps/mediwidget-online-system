@@ -68,7 +68,7 @@ useEffect(() => {
 const stats = [
     {
       title: 'Widget-Aufrufe',
-      value: analyticsData?.totalViews || widgetStats?.views || '2.547',
+      value: analyticsData?.totalViews || widgetStats?.views || '2,547',
       icon: 'Eye',
       trend: 'up',
       trendValue: '+12%',
@@ -312,7 +312,7 @@ const stats = [
             Heute im Überblick
           </h2>
           
-          <div className="space-y-4">
+<div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
@@ -324,7 +324,9 @@ const stats = [
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-primary-600">47</p>
+                <p className="text-2xl font-bold text-primary-600">
+                  {Math.floor(parseInt((analyticsData?.totalViews || '247').replace(/,/g, '')) / 30) || '47'}
+                </p>
                 <p className="text-xs text-surface-600">+23% vs. gestern</p>
               </div>
             </div>
@@ -340,7 +342,9 @@ const stats = [
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-accent-600">12</p>
+                <p className="text-2xl font-bold text-accent-600">
+                  {Math.floor(parseInt((analyticsData?.conversions || '12').replace(/,/g, '')) / 15) || '12'}
+                </p>
                 <p className="text-xs text-surface-600">+5% vs. gestern</p>
               </div>
             </div>
@@ -356,7 +360,9 @@ const stats = [
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-yellow-600">8</p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {Math.floor(parseInt((widgetStats?.callbacks || '8').replace(/,/g, '')) / 20) || '8'}
+                </p>
                 <p className="text-xs text-surface-600">-12% vs. gestern</p>
               </div>
             </div>

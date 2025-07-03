@@ -74,13 +74,24 @@ async getStats(userId = null) {
         console.log(`Loading widget stats for user ${userId}`)
       }
       
-      const stats = {
+      const baseStats = {
         views: '2,547',
         appointments: '189',
         callbacks: '156',
         chats: '432',
         conversions: '189',
         conversionRate: '7.4%'
+      }
+      
+      // Add some realistic daily variance
+      const dailyMultiplier = 0.8 + (Math.random() * 0.4) // 0.8 to 1.2
+      const todayViews = Math.floor(parseInt(baseStats.views.replace(/,/g, '')) * dailyMultiplier / 30)
+      const todayConversions = Math.floor(parseInt(baseStats.conversions.replace(/,/g, '')) * dailyMultiplier / 30)
+      
+      const stats = {
+        ...baseStats,
+        todayViews: todayViews.toString(),
+        todayConversions: todayConversions.toString()
       }
       
       // Validate that all required stats are present
@@ -101,13 +112,16 @@ async getEmbedCode(practiceId = 1) {
       throw new Error('Ungültige Praxis-ID für Embed-Code')
     }
     
+    // Generate stable widget ID based on practice ID
+    const stableWidgetId = `mw_${practiceId.toString().padStart(8, '0')}`
+    
     return `<!-- MediWidget Pro -->
 <div id="mediwidget-container"></div>
 <script>
   (function() {
     var script = document.createElement('script');
     script.src = 'https://widgets.mediwidget.pro/embed.js';
-    script.setAttribute('data-widget-id', 'widget_${practiceId}');
+    script.setAttribute('data-widget-id', '${stableWidgetId}');
     script.setAttribute('data-practice-id', '${practiceId}');
     document.head.appendChild(script);
   })();

@@ -99,74 +99,93 @@ return (
       className={`${containerClasses} bg-white rounded-lg shadow-lg overflow-hidden ${launcherMode ? 'fixed bottom-20 right-6 z-50' : ''}`}
       style={previewStyles}
     >
-      {/* Widget Header */}
-      <div className="widget-header" style={{ backgroundColor: secondaryColor }}>
-        <div className="flex items-center space-x-3">
-          {logo && (
-            <img 
-              src={logo} 
-              alt={name}
-              className="w-8 h-8 rounded-full object-cover"
-            />
-          )}
-          <div>
-            <h3 className="font-semibold text-surface-900">{name}</h3>
-            <div className="flex items-center space-x-2 text-xs">
-              <div className={`w-2 h-2 rounded-full ${status.isOpen ? 'bg-accent-500' : 'bg-surface-400'}`}></div>
-              <span className={status.isOpen ? 'text-accent-700' : 'text-surface-600'}>
-                {status.message}
-              </span>
+{/* Widget Header */}
+      <div className="widget-header bg-white border-b border-surface-100 px-5 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            {logo ? (
+              <img 
+                src={logo} 
+                alt={name}
+                className="w-10 h-10 rounded-full object-cover shadow-sm"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
+                <ApperIcon name="Stethoscope" size={18} className="text-white" />
+              </div>
+            )}
+            <div>
+              <h3 className="font-semibold text-surface-900 text-sm">{name}</h3>
+              <div className="flex items-center space-x-2">
+                <div className={`w-2 h-2 rounded-full ${status.isOpen ? 'bg-green-400' : 'bg-surface-300'}`}></div>
+                <span className={`text-xs font-medium ${status.isOpen ? 'text-green-600' : 'text-surface-500'}`}>
+                  {status.isOpen ? 'Online' : 'Offline'}
+                </span>
+              </div>
             </div>
           </div>
-</div>
-        
-        <button 
-          onClick={() => launcherMode && setIsLauncherOpen(false)}
-          className="p-1.5 hover:bg-white hover:bg-opacity-50 rounded-lg transition-colors"
-        >
-          <ApperIcon name={launcherMode ? "X" : "Minimize2"} size={16} className="text-surface-600" />
-        </button>
+          
+          <button 
+            onClick={() => launcherMode && setIsLauncherOpen(false)}
+            className="p-2 hover:bg-surface-50 rounded-full transition-colors duration-200"
+          >
+            <ApperIcon name={launcherMode ? "X" : "Minimize2"} size={16} className="text-surface-400" />
+          </button>
+        </div>
       </div>
 
-      {/* Widget Content */}
-      <div className="widget-content">
+{/* Widget Content */}
+      <div className="widget-content px-5 py-4 space-y-4">
         {/* Chatbot Section */}
         {showChatbot && (
-          <div className="widget-chat">
-            <div className="flex items-start space-x-2">
-              <div className="w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
-                <ApperIcon name="MessageCircle" size={12} className="text-white" />
+          <div className="space-y-3">
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center flex-shrink-0">
+                <ApperIcon name="MessageCircle" size={14} className="text-white" />
               </div>
               <div className="flex-1">
-                <p className="text-surface-800 text-sm">
-                  Hallo! Wie kann ich Ihnen helfen?
-                </p>
-                <div className="mt-2 space-y-1">
-                  <button className="text-xs text-primary-600 hover:text-primary-700 block">
-                    📅 Termin vereinbaren
-                  </button>
-                  <button className="text-xs text-primary-600 hover:text-primary-700 block">
-                    📞 Rückruf anfordern
-                  </button>
-                  <button className="text-xs text-primary-600 hover:text-primary-700 block">
-                    ℹ️ Praxis-Informationen
-                  </button>
+                <div className="bg-surface-50 rounded-2xl rounded-tl-md px-4 py-3 max-w-xs">
+                  <p className="text-surface-800 text-sm leading-relaxed">
+                    Hallo! Wie kann ich Ihnen heute helfen?
+                  </p>
                 </div>
+                <p className="text-xs text-surface-400 mt-1 ml-1">Gerade eben</p>
+              </div>
+            </div>
+            
+            <div className="flex justify-center">
+              <div className="flex flex-wrap gap-2 max-w-xs">
+                <button className="px-3 py-2 bg-white border border-surface-200 hover:border-primary-300 rounded-full text-xs font-medium text-surface-700 hover:text-primary-600 transition-colors duration-200 flex items-center space-x-1">
+                  <ApperIcon name="Calendar" size={12} />
+                  <span>Termin vereinbaren</span>
+                </button>
+                <button className="px-3 py-2 bg-white border border-surface-200 hover:border-primary-300 rounded-full text-xs font-medium text-surface-700 hover:text-primary-600 transition-colors duration-200 flex items-center space-x-1">
+                  <ApperIcon name="Phone" size={12} />
+                  <span>Rückruf anfordern</span>
+                </button>
+                <button className="px-3 py-2 bg-white border border-surface-200 hover:border-primary-300 rounded-full text-xs font-medium text-surface-700 hover:text-primary-600 transition-colors duration-200 flex items-center space-x-1">
+                  <ApperIcon name="Info" size={12} />
+                  <span>Informationen</span>
+                </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Opening Hours */}
+{/* Opening Hours */}
         <div className="widget-hours">
-          <h4 className="font-medium text-surface-900 mb-2 text-sm">Öffnungszeiten</h4>
-          <div className="space-y-1 text-xs">
+          <h4 className="font-semibold text-surface-900 mb-3 text-sm">Öffnungszeiten</h4>
+          <div className="bg-surface-50 rounded-xl p-3 space-y-2">
             {['Mo', 'Di', 'Mi', 'Do', 'Fr'].map((day, index) => {
               const hours = openingHours.find(h => h.dayOfWeek === index + 1)
+              const isToday = new Date().getDay() === (index + 1) % 7
               return (
-                <div key={day} className="flex justify-between">
-                  <span>{day}:</span>
-                  <span>
+                <div key={day} className={`flex justify-between items-center text-xs ${isToday ? 'font-semibold text-primary-600' : 'text-surface-600'}`}>
+                  <span className="flex items-center space-x-2">
+                    {isToday && <div className="w-2 h-2 bg-primary-500 rounded-full"></div>}
+                    <span>{day}:</span>
+                  </span>
+                  <span className={isToday ? 'text-primary-600' : 'text-surface-700'}>
                     {hours && !hours.isClosed 
                       ? `${hours.openTime} - ${hours.closeTime}`
                       : 'Geschlossen'
@@ -179,30 +198,30 @@ return (
         </div>
 
         {/* Action Buttons */}
-        <div className="space-y-2">
+        <div className="space-y-3 pt-2">
           {showAppointment && (
             <button 
-              className="widget-button primary w-full"
-              style={{ backgroundColor: primaryColor }}
+              className="w-full py-3 px-4 rounded-xl font-semibold text-sm text-white transition-all duration-200 hover:shadow-lg hover:scale-[1.02] flex items-center justify-center space-x-2"
+              style={{ backgroundColor: primaryColor || '#0066CC' }}
             >
-              <ApperIcon name="Calendar" size={16} className="mr-2" />
-              Termin vereinbaren
+              <ApperIcon name="Calendar" size={16} />
+              <span>Termin vereinbaren</span>
             </button>
           )}
           
           {showCallback && (
-            <button className="widget-button secondary w-full">
-              <ApperIcon name="Phone" size={16} className="mr-2" />
-              Rückruf anfordern
+            <button className="w-full py-3 px-4 bg-surface-100 hover:bg-surface-200 text-surface-700 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-[1.02] flex items-center justify-center space-x-2">
+              <ApperIcon name="Phone" size={16} />
+              <span>Rückruf anfordern</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Powered by */}
-      <div className="px-4 py-2 border-t border-surface-200 text-center">
-        <p className="text-xs text-surface-500">
-          Powered by <span className="font-medium text-primary-600">MediWidget Pro</span>
+{/* Powered by */}
+      <div className="px-5 py-3 border-t border-surface-100 text-center">
+        <p className="text-xs text-surface-400">
+          Powered by <span className="font-semibold text-primary-500 hover:text-primary-600 transition-colors">MediWidget Pro</span>
         </p>
       </div>
     </motion.div>

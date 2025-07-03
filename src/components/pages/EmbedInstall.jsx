@@ -51,13 +51,13 @@ const EmbedInstall = () => {
       name: 'HTML/JavaScript',
       description: 'Für statische Websites und HTML-Seiten',
       icon: 'Code',
-      code: `<!-- MediWidget Pro -->
+code: `<!-- MediWidget Pro -->
 <div id="mediwidget-container"></div>
 <script>
   (function() {
     var script = document.createElement('script');
     script.src = 'https://widgets.mediwidget.pro/embed.js';
-    script.setAttribute('data-widget-id', 'YOUR_WIDGET_ID');
+    script.setAttribute('data-widget-id', 'mw_00000001');
     script.setAttribute('data-practice-id', '1');
     document.head.appendChild(script);
   })();
@@ -309,14 +309,14 @@ export default MediWidget;`
             <div className="p-4 bg-surface-50 rounded-lg">
               <h4 className="font-medium text-surface-900 mb-2">Widget-ID</h4>
               <div className="flex items-center justify-between">
-                <code className="text-sm bg-white px-2 py-1 rounded border">
-                  mw_{Date.now().toString().slice(-8)}
+<code className="text-sm bg-white px-2 py-1 rounded border">
+                  mw_00000001
                 </code>
                 <Button
                   variant="ghost"
                   size="sm"
                   icon="Copy"
-                  onClick={() => copyToClipboard(`mw_${Date.now().toString().slice(-8)}`)}
+                  onClick={() => copyToClipboard('mw_00000001')}
                 />
               </div>
             </div>

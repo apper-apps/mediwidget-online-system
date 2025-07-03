@@ -313,7 +313,11 @@ const saveSettings = async () => {
           
 <div className="flex justify-center">
             <WidgetPreview
-              practiceInfo={{ ...practiceInfo, primaryColor: settings.primaryColor || practiceInfo.primaryColor }}
+              practiceInfo={{ 
+                ...practiceInfo, 
+                primaryColor: settings.primaryColor || practiceInfo.primaryColor,
+                secondaryColor: '#F8FAFB'
+              }}
               openingHours={openingHours}
               showChatbot={settings.showChatbot}
               showCallback={settings.showCallback}

@@ -106,27 +106,27 @@
 }
 
 .widget-header {
-  @apply px-4 py-3 border-b border-surface-200 flex items-center justify-between;
+  @apply px-5 py-4 border-b border-surface-100 flex items-center justify-between bg-white;
 }
 
 .widget-content {
-  @apply p-4 space-y-4;
+  @apply px-5 py-4 space-y-4 bg-white;
 }
 
 .widget-hours {
-  @apply text-sm text-surface-600;
+  @apply text-sm;
 }
 
 .widget-chat {
-  @apply bg-surface-50 rounded-lg p-3 text-sm;
+  @apply space-y-3;
 }
 
 .widget-button {
-  @apply w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-colors duration-200;
+  @apply w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-[1.02];
 }
 
 .widget-button.primary {
-  @apply bg-primary-500 hover:bg-primary-600 text-white;
+  @apply bg-primary-500 hover:bg-primary-600 text-white hover:shadow-lg;
 }
 
 .widget-button.secondary {
