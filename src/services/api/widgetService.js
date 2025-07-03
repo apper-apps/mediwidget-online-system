@@ -115,16 +115,56 @@ async getEmbedCode(practiceId = 1) {
     // Generate stable widget ID based on practice ID
     const stableWidgetId = `mw_${practiceId.toString().padStart(8, '0')}`
     
+    // Use environment variables for widget configuration
+    const widgetUrl = import.meta.env.VITE_WIDGET_CDN_URL || 'https://widgets.mediwidget.pro/embed.js'
+    
     return `<!-- MediWidget Pro -->
 <div id="mediwidget-container"></div>
 <script>
   (function() {
     var script = document.createElement('script');
-    script.src = 'https://widgets.mediwidget.pro/embed.js';
+    script.src = '${widgetUrl}';
     script.setAttribute('data-widget-id', '${stableWidgetId}');
     script.setAttribute('data-practice-id', '${practiceId}');
+    script.setAttribute('data-project-id', '${import.meta.env.VITE_APPER_PROJECT_ID || ''}');
+    script.onerror = function() {
+      console.error('MediWidget Pro: Failed to load widget script');
+    };
     document.head.appendChild(script);
   })();
 </script>`
+  },
+
+  async getWidgetConfig(practiceId = 1) {
+    await delay(200)
+    
+    try {
+      const widget = widgetData.find(w => w.practiceId === practiceId.toString())
+      if (!widget) {
+        // Return default configuration if no specific widget found
+        return {
+          Id: 1,
+          practiceId: practiceId.toString(),
+          config: {
+            showChatbot: true,
+            showCallback: true,
+            showAppointment: true,
+            showOpeningHours: true,
+            theme: 'light',
+            position: 'bottom-right',
+            size: 'medium',
+            borderRadius: 'rounded',
+            animation: 'slide',
+            launcherMode: true,
+            launcherText: 'Online Rezeption'
+          },
+          isActive: true
+        }
+      }
+      
+      return { ...widget }
+    } catch (error) {
+      throw new Error('Widget-Konfiguration konnte nicht geladen werden: ' + error.message)
+    }
   }
 }
