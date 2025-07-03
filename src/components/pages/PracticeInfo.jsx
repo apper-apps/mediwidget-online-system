@@ -25,13 +25,24 @@ const PracticeInfo = () => {
   const [error, setError] = useState(null)
   const [saving, setSaving] = useState(false)
 
-  const loadPracticeInfo = async () => {
+const loadPracticeInfo = async () => {
     try {
       setLoading(true)
       setError(null)
       
       const data = await practiceService.getById(1)
-      setPractice(data)
+      // Only update fields that are not already set to prevent overwriting with examples
+      setPractice(prev => ({
+        name: data.name || prev.name,
+        logo: data.logo || prev.logo,
+        primaryColor: data.primaryColor || prev.primaryColor,
+        secondaryColor: data.secondaryColor || prev.secondaryColor,
+        contactEmail: data.contactEmail || prev.contactEmail,
+        contactPhone: data.contactPhone || prev.contactPhone,
+        address: data.address || prev.address,
+        website: data.website || prev.website,
+        description: data.description || prev.description
+      }))
     } catch (err) {
       setError(err.message)
       toast.error('Fehler beim Laden der Praxis-Informationen')

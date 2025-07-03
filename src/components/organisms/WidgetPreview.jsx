@@ -73,7 +73,7 @@ const WidgetPreview = ({
 const containerClasses = size === 'mobile' 
     ? 'w-80 max-w-sm' 
     : 'w-96 max-w-md'
-  if (launcherMode && !isLauncherOpen) {
+if (launcherMode && !isLauncherOpen) {
     return (
       <motion.button
         initial={{ opacity: 0, scale: 0.8 }}
@@ -81,11 +81,15 @@ const containerClasses = size === 'mobile'
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsLauncherOpen(true)}
-        className="fixed bottom-6 right-6 bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center space-x-2 transition-all duration-200 z-50"
-        style={{ backgroundColor: primaryColor }}
+        className="fixed bottom-6 right-6 text-white px-6 py-3 rounded-full shadow-lg flex items-center space-x-2 transition-all duration-200 z-50 hover:shadow-xl"
+        style={{ 
+          backgroundColor: primaryColor || '#0066CC',
+          border: 'none',
+          cursor: 'pointer'
+        }}
       >
         <ApperIcon name="MessageCircle" size={20} />
-        <span className="font-medium">{launcherText}</span>
+        <span className="font-medium text-sm">{launcherText}</span>
       </motion.button>
     )
   }

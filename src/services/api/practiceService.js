@@ -48,7 +48,7 @@ async update(id, updates) {
     }
     
     // Validate required fields if provided
-if (updates.name && updates.name.trim().length < 2) {
+    if (updates.name && updates.name.trim().length < 2) {
       throw new Error('Praxis-Name muss mindestens 2 Zeichen lang sein')
     }
     
@@ -57,9 +57,17 @@ if (updates.name && updates.name.trim().length < 2) {
       throw new Error('Ungültiger Farbwert für Primärfarbe')
     }
     
+    // Filter out empty or undefined values to preserve existing data
+    const filteredUpdates = Object.entries(updates).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        acc[key] = value
+      }
+      return acc
+    }, {})
+    
     practiceData[index] = {
       ...practiceData[index],
-      ...updates,
+      ...filteredUpdates,
       updatedAt: new Date().toISOString()
     }
     

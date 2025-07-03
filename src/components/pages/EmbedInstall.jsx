@@ -51,15 +51,18 @@ const EmbedInstall = () => {
       name: 'HTML/JavaScript',
       description: 'Für statische Websites und HTML-Seiten',
       icon: 'Code',
-code: `<!-- MediWidget Pro -->
-<div id="mediwidget-container"></div>
+code: `<!-- MediWidget Pro - Footer optimiert -->
 <script>
   (function() {
     var script = document.createElement('script');
     script.src = 'https://widgets.mediwidget.pro/embed.js';
     script.setAttribute('data-widget-id', 'mw_00000001');
     script.setAttribute('data-practice-id', '1');
-    document.head.appendChild(script);
+    script.setAttribute('data-position', 'bottom-right');
+    script.onload = function() {
+      console.log('MediWidget Pro geladen');
+    };
+    document.body.appendChild(script);
   })();
 </script>`
     },
@@ -68,17 +71,18 @@ code: `<!-- MediWidget Pro -->
       name: 'WordPress',
       description: 'Für WordPress-Websites',
       icon: 'Globe',
-      code: `// Fügen Sie diesen Code in Ihre functions.php ein:
+code: `// Fügen Sie diesen Code in Ihre functions.php ein:
 function add_mediwidget_to_footer() {
     ?>
-    <div id="mediwidget-container"></div>
     <script>
       (function() {
         var script = document.createElement('script');
         script.src = 'https://widgets.mediwidget.pro/embed.js';
-        script.setAttribute('data-widget-id', 'YOUR_WIDGET_ID');
+        script.setAttribute('data-widget-id', 'mw_00000001');
         script.setAttribute('data-practice-id', '1');
-        document.head.appendChild(script);
+        script.setAttribute('data-position', 'bottom-right');
+        script.async = true;
+        document.body.appendChild(script);
       })();
     </script>
     <?php

@@ -43,7 +43,7 @@
     };
   }
 
-  // Create widget container
+// Create widget container
   function createWidgetContainer() {
     let container = document.getElementById('mediwidget-container');
     if (!container) {
@@ -53,8 +53,16 @@
         position: fixed;
         z-index: 999999;
         pointer-events: none;
+        font-family: Inter, system-ui, sans-serif;
       `;
-      document.body.appendChild(container);
+      // Append to body for footer compatibility
+      if (document.body) {
+        document.body.appendChild(container);
+      } else {
+        document.addEventListener('DOMContentLoaded', () => {
+          document.body.appendChild(container);
+        });
+      }
     }
     return container;
   }
@@ -405,12 +413,22 @@
       this.scriptConfig = getScriptConfig(currentScript);
     }
 
-    init() {
+init() {
       this.container = createWidgetContainer();
       positionWidget(this.container, this.scriptConfig.position || this.config.config.position);
       
-      // Start with launcher
-      this.renderLauncher();
+      // Ensure proper positioning for footer placement
+      if (this.container) {
+        this.container.style.position = 'fixed';
+        this.container.style.zIndex = '999999';
+      }
+      
+      // Start with launcher if in launcher mode
+      if (this.config.config.launcherMode) {
+        this.renderLauncher();
+      } else {
+        this.renderWidget();
+      }
       
       // Set up global methods
       window.MediWidget = {
@@ -421,9 +439,10 @@
       };
     }
 
-    renderLauncher() {
+renderLauncher() {
       if (!this.container) return;
       this.container.innerHTML = createLauncherHTML(this.config);
+      this.container.style.pointerEvents = 'auto';
       this.isOpen = false;
     }
 

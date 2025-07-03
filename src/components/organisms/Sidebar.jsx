@@ -55,10 +55,9 @@ const navigationItems = [
             <ApperIcon name="X" size={20} className="text-surface-500" />
           </button>
         </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
-          {navigationItems.map((item) => (
+{/* Navigation */}
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          {navigationItems.slice(0, 2).map((item) => (
             <NavigationItem
               key={item.to}
               to={item.to}
@@ -67,6 +66,25 @@ const navigationItems = [
               badge={item.badge}
             />
           ))}
+          
+          {/* Quick Settings Section */}
+          <div className="py-2">
+            <div className="px-3 py-2 text-xs font-semibold text-surface-500 uppercase tracking-wider">
+              Schnellzugriff
+            </div>
+            <div className="space-y-1">
+              {navigationItems.slice(2).map((item) => (
+                <NavigationItem
+                  key={item.to}
+                  to={item.to}
+                  icon={item.icon}
+                  label={item.label}
+                  badge={item.badge}
+                  compact
+                />
+              ))}
+            </div>
+          </div>
         </nav>
 
         {/* Footer */}

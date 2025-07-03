@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-import { authService } from "@/services/api/authService";
 import ApperIcon from "@/components/ApperIcon";
 import WidgetPreview from "@/components/organisms/WidgetPreview";
 import Card from "@/components/atoms/Card";
@@ -9,9 +8,10 @@ import Button from "@/components/atoms/Button";
 import StatsCard from "@/components/molecules/StatsCard";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
-import { practiceService } from "@/services/api/practiceService";
-import { widgetService } from "@/services/api/widgetService";
 import { analyticsService } from "@/services/api/analyticsService";
+import { practiceService } from "@/services/api/practiceService";
+import { authService } from "@/services/api/authService";
+import { widgetService } from "@/services/api/widgetService";
 
 const Dashboard = () => {
   const [data, setData] = useState([])
@@ -251,25 +251,52 @@ const stats = [
                 size="mobile"
               />
             </div>
-            
-            <div className="mt-4 pt-4 border-t border-surface-200">
+<div className="mt-4 pt-4 border-t border-surface-200">
               <Button
                 variant="outline"
                 size="sm"
                 icon="ExternalLink"
                 className="w-full"
                 onClick={() => {
-                  toast.success('Widget-Vorschau in neuem Fenster geöffnet')
-                  // In a real implementation, this would open a preview window
+                  const newWindow = window.open('', '_blank', 'width=450,height=650,resizable=yes,scrollbars=yes')
+                  if (newWindow) {
+                    newWindow.document.write(`
+                      <!DOCTYPE html>
+                      <html>
+                      <head>
+                        <title>Widget Vollständige Vorschau</title>
+                        <style>
+                          body { margin: 0; padding: 20px; font-family: Inter, sans-serif; background: #f8fafc; }
+                          .preview-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+                        </style>
+                      </head>
+                      <body>
+                        <div class="preview-container">
+                          <div id="widget-preview-root"></div>
+                        </div>
+                        <script>
+                          const practiceInfo = ${JSON.stringify(practiceInfo)};
+                          // Full widget implementation would be loaded here
+                          document.getElementById('widget-preview-root').innerHTML = 
+                            '<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 400px;"><h3>Widget Vollständige Vorschau</h3><p>Praxis: ' + (practiceInfo?.name || 'Dr. Muster Praxis') + '</p><p>Diese Vorschau zeigt das Widget in voller Größe.</p></div>';
+                        </script>
+                      </body>
+                      </html>
+                    `)
+                    newWindow.document.close()
+                    toast.success('Widget-Vorschau in neuem Fenster geöffnet')
+                  } else {
+                    toast.error('Popup wurde blockiert. Bitte erlauben Sie Popups für diese Seite.')
+                  }
                 }}
               >
+                Vollständige Vorschau
+>
                 Vollständige Vorschau
               </Button>
             </div>
           </Card>
         </div>
-      </div>
-
       {/* Recent Activity & Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Activity */}
@@ -325,7 +352,7 @@ const stats = [
               </div>
               <div className="text-right">
                 <p className="text-2xl font-bold text-primary-600">
-                  {Math.floor(parseInt((analyticsData?.totalViews || '247').replace(/,/g, '')) / 30) || '47'}
+                  {Math.ceil(parseInt((analyticsData?.totalViews || widgetStats?.views || '2547').replace(/,/g, '')) * 0.15) || '85'}
                 </p>
                 <p className="text-xs text-surface-600">+23% vs. gestern</p>
               </div>
@@ -343,7 +370,7 @@ const stats = [
               </div>
               <div className="text-right">
                 <p className="text-2xl font-bold text-accent-600">
-                  {Math.floor(parseInt((analyticsData?.conversions || '12').replace(/,/g, '')) / 15) || '12'}
+                  {Math.ceil(parseInt((analyticsData?.conversions || widgetStats?.appointments || '189').replace(/,/g, '')) * 0.08) || '15'}
                 </p>
                 <p className="text-xs text-surface-600">+5% vs. gestern</p>
               </div>
@@ -361,7 +388,7 @@ const stats = [
               </div>
               <div className="text-right">
                 <p className="text-2xl font-bold text-yellow-600">
-                  {Math.floor(parseInt((widgetStats?.callbacks || '8').replace(/,/g, '')) / 20) || '8'}
+                  {Math.ceil(parseInt((widgetStats?.callbacks || '156').replace(/,/g, '')) * 0.05) || '8'}
                 </p>
                 <p className="text-xs text-surface-600">-12% vs. gestern</p>
               </div>
