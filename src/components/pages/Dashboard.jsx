@@ -11,6 +11,7 @@ import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
 import { practiceService } from "@/services/api/practiceService";
 import { widgetService } from "@/services/api/widgetService";
+import { analyticsService } from "@/services/api/analyticsService";
 
 const Dashboard = () => {
   const [data, setData] = useState([])
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const [error, setError] = useState(null)
   const [practiceInfo, setPracticeInfo] = useState(null)
   const [widgetStats, setWidgetStats] = useState(null)
+  const [analyticsData, setAnalyticsData] = useState(null)
   const [currentUser, setCurrentUser] = useState(null)
 
   const loadDashboardData = async () => {
@@ -33,13 +35,15 @@ const Dashboard = () => {
         throw new Error('Benutzer nicht gefunden')
       }
       
-      const [practice, stats] = await Promise.all([
+const [practice, stats, analytics] = await Promise.all([
         practiceService.getById(user.practiceId || 1),
-        widgetService.getStats()
+        widgetService.getStats(),
+        analyticsService.getAnalytics('7d', user.id)
       ])
       
       setPracticeInfo(practice)
       setWidgetStats(stats)
+      setAnalyticsData(analytics)
       setData([practice, stats])
     } catch (err) {
       setError(err.message)
@@ -61,10 +65,10 @@ useEffect(() => {
     return <Error message={error} onRetry={loadDashboardData} />
   }
 
-  const stats = [
+const stats = [
     {
       title: 'Widget-Aufrufe',
-      value: widgetStats?.views || '1.234',
+      value: analyticsData?.totalViews || widgetStats?.views || '2.547',
       icon: 'Eye',
       trend: 'up',
       trendValue: '+12%',
@@ -72,7 +76,7 @@ useEffect(() => {
     },
     {
       title: 'Termin-Anfragen',
-      value: widgetStats?.appointments || '89',
+      value: analyticsData?.conversions || widgetStats?.appointments || '189',
       icon: 'Calendar',
       trend: 'up',
       trendValue: '+8%',
@@ -80,7 +84,7 @@ useEffect(() => {
     },
     {
       title: 'Rückruf-Anfragen',
-      value: widgetStats?.callbacks || '56',
+      value: widgetStats?.callbacks || '156',
       icon: 'Phone',
       trend: 'down',
       trendValue: '-3%',
@@ -88,7 +92,7 @@ useEffect(() => {
     },
     {
       title: 'Chat-Interaktionen',
-      value: widgetStats?.chats || '234',
+      value: widgetStats?.chats || '432',
       icon: 'MessageSquare',
       trend: 'up',
       trendValue: '+15%',

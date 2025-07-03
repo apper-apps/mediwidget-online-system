@@ -37,6 +37,13 @@ export const widgetService = {
     if (index === -1) {
       throw new Error('Widget nicht gefunden')
     }
+// Validate config if provided
+    if (updates.config) {
+      // Ensure launcher settings are preserved
+      if (updates.config.launcherMode !== undefined) {
+        updates.config.launcherText = updates.config.launcherText || 'Online Rezeption'
+      }
+    }
     
     widgetData[index] = {
       ...widgetData[index],

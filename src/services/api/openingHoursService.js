@@ -5,12 +5,17 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 export const openingHoursService = {
   async getAll() {
-    await delay(300)
+    await delay(200)
     return [...openingHoursData]
   },
 
   async getById(id) {
-    await delay(200)
+    await delay(150)
+    
+    if (!id || isNaN(parseInt(id))) {
+      throw new Error('Ungültige Öffnungszeiten-ID')
+    }
+    
     const hours = openingHoursData.find(h => h.Id === parseInt(id))
     if (!hours) {
       throw new Error('Öffnungszeiten nicht gefunden')
@@ -18,13 +23,8 @@ export const openingHoursService = {
     return { ...hours }
   },
 
-async create(hoursInfo) {
-    await delay(400)
-    
-    if (!hoursInfo.practiceId) {
-      throw new Error('Praxis-ID ist erforderlich')
-    }
-    
+  async create(hoursInfo) {
+    await delay(300)
     const newId = Math.max(...openingHoursData.map(h => h.Id)) + 1
     const newHours = {
       Id: newId,
@@ -35,8 +35,8 @@ async create(hoursInfo) {
     return { ...newHours }
   },
 
-async update(id, updates) {
-    await delay(350)
+  async update(id, updates) {
+    await delay(250)
     
     if (!id || isNaN(parseInt(id))) {
       throw new Error('Ungültige Öffnungszeiten-ID')
@@ -47,17 +47,13 @@ async update(id, updates) {
       throw new Error('Öffnungszeiten nicht gefunden')
     }
     
-    // Validate hours format if provided
-    if (updates.hours) {
-      const validTimeFormat = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
-      Object.values(updates.hours).forEach(dayHours => {
-        if (dayHours.open && !validTimeFormat.test(dayHours.open)) {
-          throw new Error('Ungültiges Zeitformat für Öffnung')
-        }
-        if (dayHours.close && !validTimeFormat.test(dayHours.close)) {
-          throw new Error('Ungültiges Zeitformat für Schließung')
-        }
-      })
+    // Validate time format if provided
+    if (updates.openTime && !updates.openTime.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)) {
+      throw new Error('Ungültiges Öffnungszeit-Format (HH:MM erwartet)')
+    }
+    
+    if (updates.closeTime && !updates.closeTime.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)) {
+      throw new Error('Ungültiges Schließzeit-Format (HH:MM erwartet)')
     }
     
     openingHoursData[index] = {
@@ -70,7 +66,7 @@ async update(id, updates) {
   },
 
   async delete(id) {
-    await delay(250)
+    await delay(200)
     const index = openingHoursData.findIndex(h => h.Id === parseInt(id))
     if (index === -1) {
       throw new Error('Öffnungszeiten nicht gefunden')

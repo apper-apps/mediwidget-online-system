@@ -1,22 +1,44 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import ApperIcon from '@/components/ApperIcon'
-import Card from '@/components/atoms/Card'
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import Card from "@/components/atoms/Card";
+import { openingHoursService } from "@/services/api/openingHoursService";
 
 const WidgetPreview = ({ 
   practiceInfo = {},
-  openingHours = [],
+  openingHours: propOpeningHours = [],
   showChatbot = true,
   showCallback = true,
   showAppointment = true,
-  size = 'desktop' 
+  size = 'desktop',
+  launcherMode = false,
+  launcherText = 'Online Rezeption'
 }) => {
+  const [openingHours, setOpeningHours] = useState(propOpeningHours)
+  const [isLauncherOpen, setIsLauncherOpen] = useState(false)
+
   const {
     name = 'Dr. Muster Praxis',
     primaryColor = '#0066CC',
     secondaryColor = '#E8F2FF',
     logo
   } = practiceInfo
+
+  useEffect(() => {
+    const loadOpeningHours = async () => {
+      if (propOpeningHours.length === 0) {
+        try {
+          const hours = await openingHoursService.getAll()
+          setOpeningHours(hours)
+        } catch (error) {
+          console.error('Error loading opening hours:', error)
+        }
+      } else {
+        setOpeningHours(propOpeningHours)
+      }
+    }
+    loadOpeningHours()
+  }, [propOpeningHours])
 
   const getCurrentStatus = () => {
     const now = new Date()
@@ -48,16 +70,33 @@ const WidgetPreview = ({
     '--secondary-color': secondaryColor,
   }
 
-  const containerClasses = size === 'mobile' 
+const containerClasses = size === 'mobile' 
     ? 'w-80 max-w-sm' 
     : 'w-96 max-w-md'
+  if (launcherMode && !isLauncherOpen) {
+    return (
+      <motion.button
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsLauncherOpen(true)}
+        className="fixed bottom-6 right-6 bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center space-x-2 transition-all duration-200 z-50"
+        style={{ backgroundColor: primaryColor }}
+      >
+        <ApperIcon name="MessageCircle" size={20} />
+        <span className="font-medium">{launcherText}</span>
+      </motion.button>
+    )
+  }
 
-  return (
+return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: launcherMode ? 100 : 20 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={launcherMode ? { opacity: 0, y: 100 } : undefined}
       transition={{ duration: 0.5 }}
-      className={`widget-preview ${containerClasses}`}
+      className={`${containerClasses} bg-white rounded-lg shadow-lg overflow-hidden ${launcherMode ? 'fixed bottom-20 right-6 z-50' : ''}`}
       style={previewStyles}
     >
       {/* Widget Header */}
@@ -79,10 +118,13 @@ const WidgetPreview = ({
               </span>
             </div>
           </div>
-        </div>
+</div>
         
-        <button className="p-1.5 hover:bg-white hover:bg-opacity-50 rounded-lg transition-colors">
-          <ApperIcon name="Minimize2" size={16} className="text-surface-600" />
+        <button 
+          onClick={() => launcherMode && setIsLauncherOpen(false)}
+          className="p-1.5 hover:bg-white hover:bg-opacity-50 rounded-lg transition-colors"
+        >
+          <ApperIcon name={launcherMode ? "X" : "Minimize2"} size={16} className="text-surface-600" />
         </button>
       </div>
 

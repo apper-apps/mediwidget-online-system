@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Card from '@/components/atoms/Card'
-import Button from '@/components/atoms/Button'
-import FormField from '@/components/molecules/FormField'
-import Loading from '@/components/ui/Loading'
-import Error from '@/components/ui/Error'
-import WidgetPreview from '@/components/organisms/WidgetPreview'
-import ApperIcon from '@/components/ApperIcon'
-import { toast } from 'react-toastify'
-import { widgetService } from '@/services/api/widgetService'
-import { practiceService } from '@/services/api/practiceService'
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import WidgetPreview from "@/components/organisms/WidgetPreview";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import FormField from "@/components/molecules/FormField";
+import { openingHoursService } from "@/services/api/openingHoursService";
+import { practiceService } from "@/services/api/practiceService";
+import { widgetService } from "@/services/api/widgetService";
 
 const WidgetSettings = () => {
   const [settings, setSettings] = useState({
@@ -20,28 +21,31 @@ const WidgetSettings = () => {
     theme: 'light',
     position: 'bottom-right',
     size: 'medium',
-    borderRadius: 'rounded',
+borderRadius: 'rounded',
     animation: 'slide'
-  })
-  const [practiceInfo, setPracticeInfo] = useState({})
+  });
+  const [practiceInfo, setPracticeInfo] = useState({});
+  const [openingHours, setOpeningHours] = useState([]);
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [saving, setSaving] = useState(false)
 
-  const loadSettings = async () => {
+const loadSettings = async () => {
     try {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
       
-      const [widgetData, practiceData] = await Promise.all([
+      const [widgetData, practiceData, hoursData] = await Promise.all([
         widgetService.getById(1),
-        practiceService.getById(1)
-      ])
+        practiceService.getById(1),
+        openingHoursService.getAll()
+      ]);
       
       if (widgetData.config) {
-        setSettings({ ...settings, ...widgetData.config })
+        setSettings({ ...settings, ...widgetData.config });
       }
-      setPracticeInfo(practiceData)
+      setPracticeInfo(practiceData || {});
+      setOpeningHours(hoursData || []);
     } catch (err) {
       setError(err.message)
       toast.error('Fehler beim Laden der Widget-Einstellungen')
@@ -50,14 +54,23 @@ const WidgetSettings = () => {
     }
   }
 
-  const saveSettings = async () => {
+const saveSettings = async () => {
     try {
       setSaving(true)
       
+      // Update widget settings
       await widgetService.update(1, {
         config: settings,
         isActive: true
       })
+
+      // Update practice info if color changed
+      if (settings.primaryColor && settings.primaryColor !== practiceInfo.primaryColor) {
+        await practiceService.update(1, {
+          primaryColor: settings.primaryColor
+        })
+        setPracticeInfo(prev => ({ ...prev, primaryColor: settings.primaryColor }))
+      }
       
       toast.success('Widget-Einstellungen erfolgreich gespeichert')
     } catch (err) {
@@ -196,16 +209,19 @@ const WidgetSettings = () => {
               ]}
             />
 
-            <div>
+<div>
               <label className="form-label">Primärfarbe</label>
               <div className="grid grid-cols-3 gap-3 mt-2">
                 {colorOptions.map((option) => (
                   <button
                     key={option.value}
-                    onClick={() => handleSettingChange(option.value, 'primaryColor')}
+                    onClick={() => {
+                      handleSettingChange(option.value, 'primaryColor');
+                      setSettings(prev => ({ ...prev, primaryColor: option.value }));
+                    }}
                     className={`
                       p-3 rounded-lg border-2 transition-all duration-200 flex items-center space-x-2
-                      ${practiceInfo.primaryColor === option.value 
+                      ${(settings.primaryColor || practiceInfo.primaryColor) === option.value 
                         ? 'border-surface-900 shadow-md' 
                         : 'border-surface-200 hover:border-surface-300'
                       }
@@ -295,16 +311,16 @@ const WidgetSettings = () => {
             </div>
           </div>
           
-          <div className="flex justify-center">
+<div className="flex justify-center">
             <WidgetPreview
-              practiceInfo={practiceInfo}
+              practiceInfo={{ ...practiceInfo, primaryColor: settings.primaryColor || practiceInfo.primaryColor }}
+              openingHours={openingHours}
               showChatbot={settings.showChatbot}
               showCallback={settings.showCallback}
               showAppointment={settings.showAppointment}
               size="desktop"
             />
           </div>
-          
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

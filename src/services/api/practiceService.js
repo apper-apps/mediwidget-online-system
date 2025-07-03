@@ -48,8 +48,13 @@ async update(id, updates) {
     }
     
     // Validate required fields if provided
-    if (updates.name && updates.name.trim().length < 2) {
+if (updates.name && updates.name.trim().length < 2) {
       throw new Error('Praxis-Name muss mindestens 2 Zeichen lang sein')
+    }
+    
+    // Validate color values if provided
+    if (updates.primaryColor && !updates.primaryColor.match(/^#[0-9A-F]{6}$/i)) {
+      throw new Error('Ungültiger Farbwert für Primärfarbe')
     }
     
     practiceData[index] = {

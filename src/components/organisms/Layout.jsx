@@ -32,9 +32,10 @@ const Layout = () => {
       toast.error('Fehler beim Abmelden')
     }
   }
-  const getPageTitle = () => {
+const getPageTitle = () => {
     const titles = {
       '/': 'Dashboard',
+      '/settings': 'Einstellungen',
       '/widget-settings': 'Widget-Einstellungen',
       '/practice-info': 'Praxis-Informationen',
       '/opening-hours': 'Öffnungszeiten',
@@ -55,8 +56,8 @@ const Layout = () => {
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-<Header 
+<div className="flex-1 flex flex-col min-w-0">
+        <Header 
           onMenuClick={() => setSidebarOpen(true)}
           title={getPageTitle()}
           currentUser={currentUser}

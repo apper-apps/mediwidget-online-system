@@ -4,9 +4,10 @@ import NavigationItem from '@/components/molecules/NavigationItem'
 import ApperIcon from '@/components/ApperIcon'
 
 const Sidebar = ({ isOpen, onClose }) => {
-  const navigationItems = [
+const navigationItems = [
     { to: '/', icon: 'LayoutDashboard', label: 'Dashboard' },
-    { to: '/widget-settings', icon: 'Settings', label: 'Widget-Einstellungen' },
+    { to: '/settings', icon: 'Settings', label: 'Einstellungen' },
+    { to: '/widget-settings', icon: 'Sliders3', label: 'Widget-Einstellungen' },
     { to: '/practice-info', icon: 'Building2', label: 'Praxis-Informationen' },
     { to: '/opening-hours', icon: 'Clock', label: 'Öffnungszeiten' },
     { to: '/callback-setup', icon: 'Phone', label: 'Rückruf-Setup' },

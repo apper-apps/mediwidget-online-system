@@ -29,7 +29,8 @@ function App() {
               <Layout />
             </ProtectedRoute>
           }>
-            <Route index element={<Dashboard />} />
+<Route index element={<Dashboard />} />
+            <Route path="settings" element={<WidgetSettings />} />
             <Route path="widget-settings" element={<WidgetSettings />} />
             <Route path="practice-info" element={<PracticeInfo />} />
             <Route path="opening-hours" element={<OpeningHours />} />
