@@ -1,8 +1,8 @@
 [
   {
-    "Id": 1,
+"Id": 1,
     "practiceId": "1",
-    "embedCode": "<script src=\"https://widgets.mediwidget.pro/embed.js\" data-widget-id=\"1\" data-practice-id=\"1\"></script>",
+    "embedCode": "<script src=\"/embed.js\" data-widget-id=\"1\" data-practice-id=\"1\"></script>",
     "isActive": true,
     "config": {
       "showChatbot": true,
@@ -19,9 +19,9 @@
     "updatedAt": "2024-01-20T15:00:00Z"
   },
   {
-    "Id": 2,
+"Id": 2,
     "practiceId": "2",
-    "embedCode": "<script src=\"https://widgets.mediwidget.pro/embed.js\" data-widget-id=\"2\" data-practice-id=\"2\"></script>",
+    "embedCode": "<script src=\"/embed.js\" data-widget-id=\"2\" data-practice-id=\"2\"></script>",
     "isActive": true,
     "config": {
       "showChatbot": true,

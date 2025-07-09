@@ -1,12 +1,12 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { setUser } from '@/store/userSlice'
-import { authService } from '@/services/api/authService'
-import { toast } from 'react-toastify'
-import Button from '@/components/atoms/Button'
-import Input from '@/components/atoms/Input'
-import ApperIcon from '@/components/ApperIcon'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { setUser } from "@/store/userSlice";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import { authService } from "@/services/api/authService";
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -29,26 +29,24 @@ function Signup() {
     }))
   }
 
-  const validateForm = () => {
+const validateForm = () => {
     if (!formData.firstName || !formData.lastName || !formData.email || 
         !formData.password || !formData.confirmPassword) {
-      toast.error('Please fill in all fields')
+      toast.error('Bitte füllen Sie alle Felder aus')
       return false
     }
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match')
+      toast.error('Passwörter stimmen nicht überein')
       return false
     }
-
     if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters long')
+      toast.error('Passwort muss mindestens 6 Zeichen lang sein')
       return false
     }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(formData.email)) {
-      toast.error('Please enter a valid email address')
+      toast.error('Bitte geben Sie eine gültige E-Mail-Adresse ein')
       return false
     }
 
@@ -66,10 +64,9 @@ function Signup() {
       setLoading(true)
       const userData = await authService.register(formData)
       
-      // Store user in Redux
+// Store user in Redux
       dispatch(setUser(userData))
-      
-      toast.success('Account created successfully!')
+      toast.success('Konto erfolgreich erstellt!')
       navigate('/')
       
     } catch (error) {
@@ -85,59 +82,59 @@ function Signup() {
         <div className="flex flex-col gap-6 items-center justify-center">
           <div className="w-14 h-14 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-r from-primary-500 to-primary-600 text-white text-2xl 2xl:text-3xl font-bold">
             M
-          </div>
+</div>
           <div className="flex flex-col gap-1 items-center justify-center">
             <div className="text-center text-lg xl:text-xl font-bold">
-              Create Account
+              Konto erstellen
             </div>
             <div className="text-center text-sm text-gray-500">
-              Please create an account to continue
+              Bitte erstellen Sie ein Konto, um fortzufahren
             </div>
           </div>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <Input
+<Input
               type="text"
               name="firstName"
-              placeholder="First Name"
+              placeholder="Vorname"
               value={formData.firstName}
               onChange={handleInputChange}
               required
             />
-            <Input
+<Input
               type="text"
               name="lastName"
-              placeholder="Last Name"
+              placeholder="Nachname"
               value={formData.lastName}
               onChange={handleInputChange}
               required
             />
           </div>
           
-          <Input
+<Input
             type="email"
             name="email"
-            placeholder="Enter your email"
+            placeholder="E-Mail-Adresse eingeben"
             value={formData.email}
             onChange={handleInputChange}
             required
           />
           
-          <Input
+<Input
             type="password"
             name="password"
-            placeholder="Create password (min 6 characters)"
+            placeholder="Passwort erstellen (min. 6 Zeichen)"
             value={formData.password}
             onChange={handleInputChange}
             required
           />
           
-          <Input
+<Input
             type="password"
             name="confirmPassword"
-            placeholder="Confirm password"
+            placeholder="Passwort bestätigen"
             value={formData.confirmPassword}
             onChange={handleInputChange}
             required
@@ -147,18 +144,18 @@ function Signup() {
             type="submit"
             variant="primary"
             size="lg"
-            loading={loading}
+loading={loading}
             className="w-full"
           >
-            Create Account
+            Konto erstellen
           </Button>
         </form>
         
-        <div className="text-center mt-4">
+<div className="text-center mt-4">
           <p className="text-sm text-surface-600">
-            Already have an account?{' '}
+            Bereits ein Konto?{' '}
             <Link to="/login" className="font-medium text-primary-600 hover:text-primary-700">
-              Sign in
+              Anmelden
             </Link>
           </p>
         </div>
@@ -167,4 +164,4 @@ function Signup() {
   )
 }
 
-export default Signup
+export default Signup;

@@ -1,12 +1,12 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { setUser } from '@/store/userSlice'
-import { authService } from '@/services/api/authService'
-import { toast } from 'react-toastify'
-import Button from '@/components/atoms/Button'
-import Input from '@/components/atoms/Input'
-import ApperIcon from '@/components/ApperIcon'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { setUser } from "@/store/userSlice";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import { authService } from "@/services/api/authService";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -29,11 +29,11 @@ function Login() {
     }))
   }
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault()
     
     if (!formData.email || !formData.password) {
-      toast.error('Please fill in all fields')
+      toast.error('Bitte füllen Sie alle Felder aus')
       return
     }
 
@@ -44,7 +44,7 @@ function Login() {
       // Store user in Redux
       dispatch(setUser(userData))
       
-      toast.success('Login successful!')
+      toast.success('Anmeldung erfolgreich!')
       navigate('/')
       
     } catch (error) {
@@ -54,14 +54,12 @@ function Login() {
     }
   }
 
-  const handleForgotPassword = async (e) => {
+const handleForgotPassword = async (e) => {
     e.preventDefault()
-    
     if (!resetEmail) {
-      toast.error('Please enter your email address')
+      toast.error('Bitte geben Sie Ihre E-Mail-Adresse ein')
       return
     }
-
     try {
       setResetLoading(true)
       const result = await authService.requestPasswordReset(resetEmail)
@@ -83,21 +81,21 @@ function Login() {
             <div className="w-14 h-14 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-r from-primary-500 to-primary-600 text-white text-2xl 2xl:text-3xl font-bold">
               M
             </div>
-            <div className="flex flex-col gap-1 items-center justify-center">
+<div className="flex flex-col gap-1 items-center justify-center">
               <div className="text-center text-lg xl:text-xl font-bold">
-                Reset Password
+                Passwort zurücksetzen
               </div>
               <div className="text-center text-sm text-gray-500">
-                Enter your email to receive a reset link
+                Geben Sie Ihre E-Mail-Adresse ein, um einen Reset-Link zu erhalten
               </div>
             </div>
           </div>
           
           <form onSubmit={handleForgotPassword} className="space-y-6">
             <Input
-              type="email"
+type="email"
               name="resetEmail"
-              placeholder="Enter your email"
+              placeholder="E-Mail-Adresse eingeben"
               value={resetEmail}
               onChange={(e) => setResetEmail(e.target.value)}
               required
@@ -107,20 +105,20 @@ function Login() {
               type="submit"
               variant="primary"
               size="lg"
-              loading={resetLoading}
+loading={resetLoading}
               className="w-full"
             >
-              Send Reset Link
+              Reset-Link senden
             </Button>
             
             <Button
               type="button"
               variant="ghost"
               size="lg"
-              onClick={() => setShowForgotPassword(false)}
+onClick={() => setShowForgotPassword(false)}
               className="w-full"
             >
-              Back to Login
+              Zurück zur Anmeldung
             </Button>
           </form>
         </div>
@@ -135,61 +133,60 @@ function Login() {
           <div className="w-14 h-14 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-r from-primary-500 to-primary-600 text-white text-2xl 2xl:text-3xl font-bold">
             M
           </div>
-          <div className="flex flex-col gap-1 items-center justify-center">
+<div className="flex flex-col gap-1 items-center justify-center">
             <div className="text-center text-lg xl:text-xl font-bold">
-              Sign in to MediWidget Pro
+              Bei MediWidget Pro anmelden
             </div>
             <div className="text-center text-sm text-gray-500">
-              Welcome back, please sign in to continue
+              Willkommen zurück, bitte melden Sie sich an, um fortzufahren
             </div>
           </div>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <Input
-            type="email"
+type="email"
             name="email"
-            placeholder="Enter your email"
+            placeholder="E-Mail-Adresse eingeben"
             value={formData.email}
             onChange={handleInputChange}
             required
           />
           
-          <Input
+<Input
             type="password"
             name="password"
-            placeholder="Enter your password"
+            placeholder="Passwort eingeben"
             value={formData.password}
             onChange={handleInputChange}
             required
           />
-          
           <Button
             type="submit"
             variant="primary"
             size="lg"
             loading={loading}
-            className="w-full"
+className="w-full"
           >
-            Sign In
+            Anmelden
           </Button>
           
           <div className="text-center">
             <button
               type="button"
-              onClick={() => setShowForgotPassword(true)}
+onClick={() => setShowForgotPassword(true)}
               className="text-sm text-primary-600 hover:text-primary-700"
             >
-              Forgot your password?
+              Passwort vergessen?
             </button>
           </div>
         </form>
         
-        <div className="text-center mt-4">
+<div className="text-center mt-4">
           <p className="text-sm text-surface-600">
-            Don't have an account?{' '}
+            Noch kein Konto?{' '}
             <Link to="/signup" className="font-medium text-primary-600 hover:text-primary-700">
-              Sign up
+              Registrieren
             </Link>
           </p>
         </div>
