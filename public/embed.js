@@ -6,12 +6,15 @@
 (function() {
   'use strict';
 
-  // Configuration
+// Configuration
   const CONFIG = {
-    apiBaseUrl: 'https://api.mediwidget.pro',
+    apiBaseUrl: null, // Will be set dynamically based on practice domain
     widgetVersion: '1.0.0',
     maxRetries: 3,
-    retryDelay: 1000
+    retryDelay: 1000,
+    updateApiBaseUrl: function(domain) {
+      this.apiBaseUrl = `https://${domain}`;
+    }
   };
 
   // Global widget state
@@ -121,14 +124,97 @@
     Object.assign(container.style, pos);
   }
 
-  // Load widget configuration from API
+// Load widget configuration from API
   async function loadWidgetConfig(practiceId) {
     try {
-      // For now, return mock configuration
-      // In production, this would fetch from your API
+      // Initialize ApperClient to fetch real practice data
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: window.VITE_APPER_PROJECT_ID || 'your-project-id',
+        apperPublicKey: window.VITE_APPER_PUBLIC_KEY || 'your-public-key'
+      });
+      
+      // Fetch practice information
+      const practiceParams = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "primary_color" } },
+          { field: { Name: "secondary_color" } },
+          { field: { Name: "logo" } },
+          { field: { Name: "domain" } }
+        ]
+      };
+      
+      const practiceResponse = await apperClient.getRecordById('practice', parseInt(practiceId), practiceParams);
+      
+      if (!practiceResponse.success) {
+        throw new Error('Failed to load practice information');
+      }
+      
+      const practiceData = practiceResponse.data;
+      
+      // Update CONFIG with the practice's domain
+      if (practiceData.domain) {
+        CONFIG.updateApiBaseUrl(practiceData.domain);
+      }
+      
+      // Fetch opening hours
+      const hoursParams = {
+        fields: [
+          { field: { Name: "day_of_week" } },
+          { field: { Name: "open_time" } },
+          { field: { Name: "close_time" } },
+          { field: { Name: "is_closed" } }
+        ],
+        where: [
+          { FieldName: "practice_id", Operator: "EqualTo", Values: [practiceId] }
+        ]
+      };
+      
+      const hoursResponse = await apperClient.fetchRecords('opening_hour', hoursParams);
+      const openingHours = hoursResponse.success ? hoursResponse.data : [];
+      
+      // Transform opening hours to expected format
+      const transformedHours = [];
+      for (let i = 0; i <= 6; i++) {
+        const dayData = openingHours.find(h => h.day_of_week === i);
+        transformedHours.push({
+          dayOfWeek: i,
+          openTime: dayData ? dayData.open_time : '09:00',
+          closeTime: dayData ? dayData.close_time : '17:00',
+          isClosed: dayData ? dayData.is_closed : (i === 0) // Sunday closed by default
+        });
+      }
+      
       return {
         practiceInfo: {
-          name: 'Dr. Muster Praxis',
+          name: practiceData.Name || 'Praxis',
+          primaryColor: practiceData.primary_color || '#0066CC',
+          secondaryColor: practiceData.secondary_color || '#E8F2FF',
+          logo: practiceData.logo || null
+        },
+        config: {
+          showChatbot: true,
+          showCallback: true,
+          showAppointment: true,
+          showOpeningHours: true,
+          theme: 'light',
+          position: 'bottom-right',
+          size: 'medium',
+          borderRadius: 'rounded',
+          animation: 'slide',
+          launcherMode: true,
+          launcherText: 'Online Rezeption'
+        },
+        openingHours: transformedHours
+      };
+    } catch (error) {
+      console.error('MediWidget Pro: Failed to load configuration:', error);
+      
+      // Fallback to default configuration
+      return {
+        practiceInfo: {
+          name: 'Praxis',
           primaryColor: '#0066CC',
           secondaryColor: '#E8F2FF',
           logo: null
@@ -156,9 +242,6 @@
           { dayOfWeek: 0, openTime: '00:00', closeTime: '00:00', isClosed: true }
         ]
       };
-    } catch (error) {
-      console.error('MediWidget Pro: Failed to load configuration:', error);
-      throw error;
     }
   }
 
@@ -545,6 +628,7 @@ init() {
   }
 
 // Initialize widget with retry logic
+// Initialize widget with retry logic
   async function initializeWidget(retryCount = 0) {
     if (isInitialized) return;
     
@@ -569,8 +653,11 @@ init() {
       // Create styles
       createWidgetStyles();
       
-      // Load configuration
+      // Load configuration (this will also set the correct domain)
       const config = await loadWidgetConfig(scriptConfig.practiceId);
+      
+      // Log the API base URL being used
+      console.log('MediWidget Pro: Using API base URL:', CONFIG.apiBaseUrl);
       
       // Create widget instance
       widgetInstance = new MediWidget(config);
