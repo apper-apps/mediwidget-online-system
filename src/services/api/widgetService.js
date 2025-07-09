@@ -12,7 +12,7 @@ export const widgetService = {
     try {
       const apperClient = getApperClient()
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
           { field: { Name: "Owner" } },
@@ -24,7 +24,6 @@ export const widgetService = {
       }
       
       const response = await apperClient.fetchRecords('widget', params)
-      
       if (!response.success) {
         throw new Error(response.message)
       }
@@ -222,8 +221,24 @@ export const widgetService = {
       // Generate stable widget ID based on practice ID
       const stableWidgetId = `mw_${practiceId.toString().padStart(8, '0')}`
       
-      // Use environment variables for widget configuration
-      const widgetUrl = import.meta.env.VITE_WIDGET_CDN_URL || 'https://widgets.mediwidget.pro/embed.js'
+// Try to get practice-specific domain configuration
+      let widgetUrl = import.meta.env.VITE_WIDGET_CDN_URL || 'https://widgets.mediwidget.pro/embed.js'
+      
+      try {
+        // Check if practice has custom domain configured
+        const { practiceService } = await import('./practiceService')
+        const practiceInfo = await practiceService.getById(practiceId)
+        
+        if (practiceInfo && practiceInfo.domain) {
+          // Use custom domain if configured
+          const customDomain = practiceInfo.domain.startsWith('http') 
+            ? practiceInfo.domain 
+            : `https://${practiceInfo.domain}`
+          widgetUrl = `${customDomain}/embed.js`
+        }
+      } catch (error) {
+        console.warn('Could not load practice domain configuration, using default CDN:', error)
+      }
       
       return `<!-- MediWidget Pro -->
 <div id="mediwidget-container"></div>
@@ -235,7 +250,7 @@ export const widgetService = {
     script.setAttribute('data-practice-id', '${practiceId}');
     script.setAttribute('data-project-id', '${import.meta.env.VITE_APPER_PROJECT_ID || ''}');
     script.onerror = function() {
-      console.error('MediWidget Pro: Failed to load widget script');
+      console.error('MediWidget Pro: Failed to load widget script from ${widgetUrl}');
     };
     document.head.appendChild(script);
   })();

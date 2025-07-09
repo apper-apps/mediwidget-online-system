@@ -62,6 +62,9 @@ code: `<!-- MediWidget Pro - Footer optimiert -->
     script.onload = function() {
       console.log('MediWidget Pro geladen');
     };
+    script.onerror = function() {
+      console.error('MediWidget Pro: Widget konnte nicht geladen werden');
+    };
     document.body.appendChild(script);
   })();
 </script>`
@@ -82,6 +85,9 @@ function add_mediwidget_to_footer() {
         script.setAttribute('data-practice-id', '1');
         script.setAttribute('data-position', 'bottom-right');
         script.async = true;
+        script.onerror = function() {
+          console.error('MediWidget Pro: Widget konnte nicht geladen werden');
+        };
         document.body.appendChild(script);
       })();
     </script>
@@ -94,7 +100,7 @@ add_action('wp_footer', 'add_mediwidget_to_footer');`
       name: 'React',
       description: 'Für React-Anwendungen',
       icon: 'Component',
-      code: `import { useEffect } from 'react';
+code: `import { useEffect } from 'react';
 
 const MediWidget = () => {
   useEffect(() => {
@@ -102,10 +108,15 @@ const MediWidget = () => {
     script.src = 'https://widgets.mediwidget.pro/embed.js';
     script.setAttribute('data-widget-id', 'YOUR_WIDGET_ID');
     script.setAttribute('data-practice-id', '1');
+    script.onerror = function() {
+      console.error('MediWidget Pro: Widget konnte nicht geladen werden');
+    };
     document.head.appendChild(script);
 
     return () => {
-      document.head.removeChild(script);
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
     };
   }, []);
 
@@ -339,7 +350,7 @@ export default MediWidget;`
             </div>
             
             <div className="p-4 bg-surface-50 rounded-lg">
-              <h4 className="font-medium text-surface-900 mb-2">Widget-URL</h4>
+<h4 className="font-medium text-surface-900 mb-2">Widget-URL</h4>
               <div className="flex items-center justify-between">
                 <code className="text-sm bg-white px-2 py-1 rounded border truncate">
                   https://widgets.mediwidget.pro/embed.js
@@ -351,6 +362,9 @@ export default MediWidget;`
                   onClick={() => copyToClipboard('https://widgets.mediwidget.pro/embed.js')}
                 />
               </div>
+              <p className="text-xs text-surface-500 mt-2">
+                Tipp: Konfigurieren Sie eine benutzerdefinierte Domain in den Praxis-Einstellungen für bessere Performance und Branding.
+              </p>
             </div>
           </div>
         </Card>

@@ -12,7 +12,7 @@ export const practiceService = {
     try {
       const apperClient = getApperClient()
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
           { field: { Name: "Owner" } },
@@ -23,7 +23,8 @@ export const practiceService = {
           { field: { Name: "contact_phone" } },
           { field: { Name: "address" } },
           { field: { Name: "website" } },
-          { field: { Name: "description" } }
+          { field: { Name: "description" } },
+          { field: { Name: "domain" } }
         ]
       }
       
@@ -47,7 +48,7 @@ export const practiceService = {
       }
       
       const apperClient = getApperClient()
-      const params = {
+const params = {
         fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
@@ -59,7 +60,8 @@ export const practiceService = {
           { field: { Name: "contact_phone" } },
           { field: { Name: "address" } },
           { field: { Name: "website" } },
-          { field: { Name: "description" } }
+          { field: { Name: "description" } },
+          { field: { Name: "domain" } }
         ]
       }
       
@@ -126,7 +128,7 @@ export const practiceService = {
       const apperClient = getApperClient()
       const updateData = { Id: parseInt(id) }
       
-      // Only include updateable fields
+// Only include updateable fields
       if (updates.name !== undefined) updateData.Name = updates.name
       if (updates.tags !== undefined) updateData.Tags = updates.tags
       if (updates.owner !== undefined) updateData.Owner = updates.owner
@@ -138,7 +140,7 @@ export const practiceService = {
       if (updates.address !== undefined) updateData.address = updates.address
       if (updates.website !== undefined) updateData.website = updates.website
       if (updates.description !== undefined) updateData.description = updates.description
-      
+      if (updates.domain !== undefined) updateData.domain = updates.domain
       const params = {
         records: [updateData]
       }

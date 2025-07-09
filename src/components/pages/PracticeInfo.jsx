@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 import { practiceService } from '@/services/api/practiceService'
 
 const PracticeInfo = () => {
-  const [practice, setPractice] = useState({
+const [practice, setPractice] = useState({
     name: '',
     logo: '',
     primaryColor: '#0066CC',
@@ -19,7 +19,8 @@ const PracticeInfo = () => {
     contactPhone: '',
     address: '',
     website: '',
-    description: ''
+    description: '',
+    domain: ''
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -32,16 +33,17 @@ const loadPracticeInfo = async () => {
       
       const data = await practiceService.getById(1)
       // Only update fields that are not already set to prevent overwriting with examples
-      setPractice(prev => ({
-        name: data.name || prev.name,
+setPractice(prev => ({
+        name: data.Name || prev.name,
         logo: data.logo || prev.logo,
-        primaryColor: data.primaryColor || prev.primaryColor,
-        secondaryColor: data.secondaryColor || prev.secondaryColor,
-        contactEmail: data.contactEmail || prev.contactEmail,
-        contactPhone: data.contactPhone || prev.contactPhone,
+        primaryColor: data.primary_color || prev.primaryColor,
+        secondaryColor: data.secondary_color || prev.secondaryColor,
+        contactEmail: data.contact_email || prev.contactEmail,
+        contactPhone: data.contact_phone || prev.contactPhone,
         address: data.address || prev.address,
         website: data.website || prev.website,
-        description: data.description || prev.description
+        description: data.description || prev.description,
+        domain: data.domain || prev.domain
       }))
     } catch (err) {
       setError(err.message)
@@ -155,8 +157,7 @@ const loadPracticeInfo = async () => {
                 rows={4}
                 helperText="Diese Beschreibung wird im Widget angezeigt"
               />
-
-              <div>
+<div>
                 <label className="form-label">Praxis-Logo</label>
                 <div className="mt-2 flex items-center space-x-4">
                   {practice.logo && (
@@ -188,6 +189,16 @@ const loadPracticeInfo = async () => {
                   </div>
                 </div>
               </div>
+
+              <FormField
+                label="Benutzerdefinierte Widget-Domain"
+                name="domain"
+                value={practice.domain}
+                onChange={handleInputChange}
+                placeholder="z.B. widgets.ihre-praxis.de"
+                icon="Globe"
+                helperText="Optional: Verwenden Sie Ihre eigene Domain für das Widget anstatt der Standard-CDN-URL"
+              />
             </div>
           </Card>
 
@@ -324,7 +335,7 @@ const loadPracticeInfo = async () => {
             
             <div className="space-y-4">
               {/* Practice Card Preview */}
-              <div className="p-4 border border-surface-200 rounded-lg">
+<div className="p-4 border border-surface-200 rounded-lg">
                 <div className="flex items-center space-x-3 mb-3">
                   {practice.logo ? (
                     <img
@@ -345,6 +356,11 @@ const loadPracticeInfo = async () => {
                       <div className="w-2 h-2 bg-accent-500 rounded-full"></div>
                       <span className="text-xs text-surface-600">Online</span>
                     </div>
+                    {practice.domain && (
+                      <p className="text-xs text-surface-500 mt-1">
+                        Widget-Domain: {practice.domain}
+                      </p>
+                    )}
                   </div>
                 </div>
                 
