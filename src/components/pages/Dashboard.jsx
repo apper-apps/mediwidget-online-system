@@ -3,16 +3,15 @@ import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
 import WidgetPreview from "@/components/organisms/WidgetPreview";
-import Card from "@/components/atoms/Card";
 import Button from "@/components/atoms/Button";
-import StatsCard from "@/components/molecules/StatsCard";
+import Card from "@/components/atoms/Card";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
+import StatsCard from "@/components/molecules/StatsCard";
 import { analyticsService } from "@/services/api/analyticsService";
 import { practiceService } from "@/services/api/practiceService";
-import { authService } from "@/services/api/authService";
 import { widgetService } from "@/services/api/widgetService";
-
+import { authService } from "@/services/api/authService";
 const Dashboard = () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
