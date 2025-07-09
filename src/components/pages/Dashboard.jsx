@@ -11,7 +11,7 @@ import StatsCard from "@/components/molecules/StatsCard";
 import { analyticsService } from "@/services/api/analyticsService";
 import { practiceService } from "@/services/api/practiceService";
 import { widgetService } from "@/services/api/widgetService";
-import { authService } from "@/services/api/authService";
+import { useSelector } from 'react-redux';
 const Dashboard = () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
@@ -21,13 +21,13 @@ const Dashboard = () => {
   const [analyticsData, setAnalyticsData] = useState(null)
   const [currentUser, setCurrentUser] = useState(null)
 
-  const loadDashboardData = async () => {
+const loadDashboardData = async () => {
     try {
       setLoading(true)
       setError(null)
       
-      // Get current user first
-      const user = await authService.getCurrentUser()
+      // Get current user from Redux store
+      const user = useSelector(state => state.user.user)
       setCurrentUser(user)
       
       if (!user) {
