@@ -10,18 +10,22 @@ import { widgetService } from '@/services/api/widgetService'
 
 const EmbedInstall = () => {
   const [embedCode, setEmbedCode] = useState('')
+  const [widgetUrl, setWidgetUrl] = useState('https://widgets.mediwidget.pro/embed.js')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
   const [selectedPlatform, setSelectedPlatform] = useState('html')
-
-  const loadEmbedCode = async () => {
+const loadEmbedCode = async () => {
     try {
       setLoading(true)
       setError(null)
       
       const code = await widgetService.getEmbedCode()
       setEmbedCode(code)
+      
+      // Extract widget URL from environment or default
+      const envUrl = import.meta.env.VITE_WIDGET_CDN_URL || 'https://widgets.mediwidget.pro/embed.js'
+      setWidgetUrl(envUrl)
     } catch (err) {
       setError(err.message)
       toast.error('Fehler beim Laden des Embed-Codes')
@@ -45,17 +49,17 @@ const EmbedInstall = () => {
     }
   }
 
-  const platforms = [
+const platforms = [
     {
       id: 'html',
       name: 'HTML/JavaScript',
       description: 'Für statische Websites und HTML-Seiten',
       icon: 'Code',
-code: `<!-- MediWidget Pro - Footer optimiert -->
+      code: `<!-- MediWidget Pro - Footer optimiert -->
 <script>
   (function() {
     var script = document.createElement('script');
-    script.src = 'https://widgets.mediwidget.pro/embed.js';
+    script.src = '${widgetUrl}';
     script.setAttribute('data-widget-id', 'mw_00000001');
     script.setAttribute('data-practice-id', '1');
     script.setAttribute('data-position', 'bottom-right');
@@ -74,13 +78,13 @@ code: `<!-- MediWidget Pro - Footer optimiert -->
       name: 'WordPress',
       description: 'Für WordPress-Websites',
       icon: 'Globe',
-code: `// Fügen Sie diesen Code in Ihre functions.php ein:
+      code: `// Fügen Sie diesen Code in Ihre functions.php ein:
 function add_mediwidget_to_footer() {
     ?>
     <script>
       (function() {
         var script = document.createElement('script');
-        script.src = 'https://widgets.mediwidget.pro/embed.js';
+        script.src = '${widgetUrl}';
         script.setAttribute('data-widget-id', 'mw_00000001');
         script.setAttribute('data-practice-id', '1');
         script.setAttribute('data-position', 'bottom-right');
@@ -100,12 +104,12 @@ add_action('wp_footer', 'add_mediwidget_to_footer');`
       name: 'React',
       description: 'Für React-Anwendungen',
       icon: 'Component',
-code: `import { useEffect } from 'react';
+      code: `import { useEffect } from 'react';
 
 const MediWidget = () => {
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://widgets.mediwidget.pro/embed.js';
+    script.src = '${widgetUrl}';
     script.setAttribute('data-widget-id', 'YOUR_WIDGET_ID');
     script.setAttribute('data-practice-id', '1');
     script.onerror = function() {
@@ -135,7 +139,7 @@ export default MediWidget;`
 <script>
   (function() {
     var script = document.createElement('script');
-    script.src = 'https://widgets.mediwidget.pro/embed.js';
+    script.src = '${widgetUrl}';
     script.setAttribute('data-widget-id', 'YOUR_WIDGET_ID');
     script.setAttribute('data-practice-id', '1');
     document.head.appendChild(script);
@@ -353,13 +357,13 @@ export default MediWidget;`
 <h4 className="font-medium text-surface-900 mb-2">Widget-URL</h4>
               <div className="flex items-center justify-between">
                 <code className="text-sm bg-white px-2 py-1 rounded border truncate">
-                  https://widgets.mediwidget.pro/embed.js
+                  {widgetUrl}
                 </code>
                 <Button
                   variant="ghost"
                   size="sm"
                   icon="Copy"
-                  onClick={() => copyToClipboard('https://widgets.mediwidget.pro/embed.js')}
+                  onClick={() => copyToClipboard(widgetUrl)}
                 />
               </div>
               <p className="text-xs text-surface-500 mt-2">
