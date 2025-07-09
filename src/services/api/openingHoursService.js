@@ -1,78 +1,190 @@
-import openingHoursData from '@/services/mockData/openingHours.json'
-
-// Simulate API delay
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+// Initialize ApperClient with Project ID and Public Key
+const getApperClient = () => {
+  const { ApperClient } = window.ApperSDK
+  return new ApperClient({
+    apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+    apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+  })
+}
 
 export const openingHoursService = {
   async getAll() {
-    await delay(200)
-    return [...openingHoursData]
+    try {
+      const apperClient = getApperClient()
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "day_of_week" } },
+          { field: { Name: "open_time" } },
+          { field: { Name: "close_time" } },
+          { field: { Name: "is_closed" } },
+          { field: { Name: "breaks" } }
+        ]
+      }
+      
+      const response = await apperClient.fetchRecords('opening_hour', params)
+      
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      
+      return response.data || []
+    } catch (error) {
+      console.error('Error fetching opening hours:', error)
+      throw error
+    }
   },
 
   async getById(id) {
-    await delay(150)
-    
-    if (!id || isNaN(parseInt(id))) {
-      throw new Error('Ungültige Öffnungszeiten-ID')
+    try {
+      if (!id || isNaN(parseInt(id))) {
+        throw new Error('Ungültige Öffnungszeiten-ID')
+      }
+      
+      const apperClient = getApperClient()
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "day_of_week" } },
+          { field: { Name: "open_time" } },
+          { field: { Name: "close_time" } },
+          { field: { Name: "is_closed" } },
+          { field: { Name: "breaks" } }
+        ]
+      }
+      
+      const response = await apperClient.getRecordById('opening_hour', parseInt(id), params)
+      
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      
+      return response.data
+    } catch (error) {
+      console.error(`Error fetching opening hour with ID ${id}:`, error)
+      throw error
     }
-    
-    const hours = openingHoursData.find(h => h.Id === parseInt(id))
-    if (!hours) {
-      throw new Error('Öffnungszeiten nicht gefunden')
-    }
-    return { ...hours }
   },
 
   async create(hoursInfo) {
-    await delay(300)
-    const newId = Math.max(...openingHoursData.map(h => h.Id)) + 1
-    const newHours = {
-      Id: newId,
-      ...hoursInfo,
-      createdAt: new Date().toISOString()
+    try {
+      const apperClient = getApperClient()
+      const params = {
+        records: [{
+          Name: hoursInfo.name || `Opening Hours ${hoursInfo.dayOfWeek}`,
+          Tags: hoursInfo.tags || '',
+          Owner: hoursInfo.owner || null,
+          day_of_week: hoursInfo.dayOfWeek,
+          open_time: hoursInfo.openTime || '',
+          close_time: hoursInfo.closeTime || '',
+          is_closed: hoursInfo.isClosed || false,
+          breaks: typeof hoursInfo.breaks === 'object' ? JSON.stringify(hoursInfo.breaks) : hoursInfo.breaks || ''
+        }]
+      }
+      
+      const response = await apperClient.createRecord('opening_hour', params)
+      
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success)
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create ${failedRecords.length} records:${JSON.stringify(failedRecords)}`)
+          throw new Error(failedRecords[0].message || 'Failed to create opening hours')
+        }
+        return response.results[0].data
+      }
+      
+      return response.data
+    } catch (error) {
+      console.error('Error creating opening hours:', error)
+      throw error
     }
-    openingHoursData.push(newHours)
-    return { ...newHours }
   },
 
   async update(id, updates) {
-    await delay(250)
-    
-    if (!id || isNaN(parseInt(id))) {
-      throw new Error('Ungültige Öffnungszeiten-ID')
+    try {
+      if (!id || isNaN(parseInt(id))) {
+        throw new Error('Ungültige Öffnungszeiten-ID')
+      }
+      
+      const apperClient = getApperClient()
+      const updateData = { Id: parseInt(id) }
+      
+      // Only include updateable fields
+      if (updates.name !== undefined) updateData.Name = updates.name
+      if (updates.tags !== undefined) updateData.Tags = updates.tags
+      if (updates.owner !== undefined) updateData.Owner = updates.owner
+      if (updates.dayOfWeek !== undefined) updateData.day_of_week = updates.dayOfWeek
+      if (updates.openTime !== undefined) updateData.open_time = updates.openTime
+      if (updates.closeTime !== undefined) updateData.close_time = updates.closeTime
+      if (updates.isClosed !== undefined) updateData.is_closed = updates.isClosed
+      if (updates.breaks !== undefined) {
+        updateData.breaks = typeof updates.breaks === 'object' ? JSON.stringify(updates.breaks) : updates.breaks
+      }
+      
+      const params = {
+        records: [updateData]
+      }
+      
+      const response = await apperClient.updateRecord('opening_hour', params)
+      
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success)
+        if (failedRecords.length > 0) {
+          console.error(`Failed to update ${failedRecords.length} records:${JSON.stringify(failedRecords)}`)
+          throw new Error(failedRecords[0].message || 'Failed to update opening hours')
+        }
+        return response.results[0].data
+      }
+      
+      return response.data
+    } catch (error) {
+      console.error('Error updating opening hours:', error)
+      throw error
     }
-    
-    const index = openingHoursData.findIndex(h => h.Id === parseInt(id))
-    if (index === -1) {
-      throw new Error('Öffnungszeiten nicht gefunden')
-    }
-    
-    // Validate time format if provided
-    if (updates.openTime && !updates.openTime.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)) {
-      throw new Error('Ungültiges Öffnungszeit-Format (HH:MM erwartet)')
-    }
-    
-    if (updates.closeTime && !updates.closeTime.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)) {
-      throw new Error('Ungültiges Schließzeit-Format (HH:MM erwartet)')
-    }
-    
-    openingHoursData[index] = {
-      ...openingHoursData[index],
-      ...updates,
-      updatedAt: new Date().toISOString()
-    }
-    
-    return { ...openingHoursData[index] }
   },
 
   async delete(id) {
-    await delay(200)
-    const index = openingHoursData.findIndex(h => h.Id === parseInt(id))
-    if (index === -1) {
-      throw new Error('Öffnungszeiten nicht gefunden')
+    try {
+      if (!id || isNaN(parseInt(id))) {
+        throw new Error('Ungültige Öffnungszeiten-ID')
+      }
+      
+      const apperClient = getApperClient()
+      const params = {
+        RecordIds: [parseInt(id)]
+      }
+      
+      const response = await apperClient.deleteRecord('opening_hour', params)
+      
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success)
+        if (failedRecords.length > 0) {
+          console.error(`Failed to delete ${failedRecords.length} records:${JSON.stringify(failedRecords)}`)
+          throw new Error(failedRecords[0].message || 'Failed to delete opening hours')
+        }
+        return response.results[0].data
+      }
+      
+      return response.data
+    } catch (error) {
+      console.error('Error deleting opening hours:', error)
+      throw error
     }
-    
-    const deleted = openingHoursData.splice(index, 1)[0]
-    return { ...deleted }
   }
 }

@@ -133,7 +133,7 @@ const Header = ({ onMenuClick, title, currentUser, onLogout }) => {
 
                     <div className="border-t border-surface-200 my-2"></div>
 
-                    <button
+<button
                       onClick={handleLogoutClick}
                       className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-red-50 transition-colors text-left text-red-600"
                     >

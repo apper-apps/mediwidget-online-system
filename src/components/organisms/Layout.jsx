@@ -1,38 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import Sidebar from '@/components/organisms/Sidebar'
 import Header from '@/components/organisms/Header'
-import { authService } from '@/services/api/authService'
-import { toast } from 'react-toastify'
+import { AuthContext } from '@/App'
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [currentUser, setCurrentUser] = useState(null)
   const location = useLocation()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const user = await authService.getCurrentUser()
-        setCurrentUser(user)
-      } catch (error) {
-        console.error('Error loading user:', error)
-      }
-    }
-    loadUser()
-  }, [])
+  const { user } = useSelector((state) => state.user)
+  const { logout } = useContext(AuthContext)
 
   const handleLogout = async () => {
     try {
-      await authService.logout()
+      await logout()
       toast.success('Erfolgreich abgemeldet')
-      navigate('/login')
     } catch (error) {
       toast.error('Fehler beim Abmelden')
     }
   }
-const getPageTitle = () => {
+
+  const getPageTitle = () => {
     const titles = {
       '/': 'Dashboard',
       '/settings': 'Einstellungen',
@@ -56,11 +45,11 @@ const getPageTitle = () => {
       />
 
       {/* Main Content */}
-<div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0">
         <Header 
           onMenuClick={() => setSidebarOpen(true)}
           title={getPageTitle()}
-          currentUser={currentUser}
+          currentUser={user}
           onLogout={handleLogout}
         />
         
