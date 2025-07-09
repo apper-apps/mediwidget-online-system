@@ -19,14 +19,33 @@
   let isInitialized = false;
   let currentScript = null;
 
-  // Find the script tag that loaded this file
+// Find the script tag that loaded this file
   function findCurrentScript() {
+    // Try multiple methods to find the script
     const scripts = document.getElementsByTagName('script');
+    
+    // Method 1: Look for embed.js in src
     for (let i = scripts.length - 1; i >= 0; i--) {
       if (scripts[i].src && scripts[i].src.includes('embed.js')) {
         return scripts[i];
       }
     }
+    
+    // Method 2: Look for data-widget-id attribute (fallback)
+    for (let i = scripts.length - 1; i >= 0; i--) {
+      if (scripts[i].hasAttribute('data-widget-id') || scripts[i].hasAttribute('data-practice-id')) {
+        return scripts[i];
+      }
+    }
+    
+    // Method 3: Look for MediWidget in script content
+    for (let i = scripts.length - 1; i >= 0; i--) {
+      if (scripts[i].innerHTML && scripts[i].innerHTML.includes('MediWidget')) {
+        return scripts[i];
+      }
+    }
+    
+    console.warn('MediWidget Pro: Could not find script tag');
     return null;
   }
 
@@ -55,13 +74,34 @@
         pointer-events: none;
         font-family: Inter, system-ui, sans-serif;
       `;
-      // Append to body for footer compatibility
-      if (document.body) {
-        document.body.appendChild(container);
-      } else {
-        document.addEventListener('DOMContentLoaded', () => {
+      
+      // Enhanced container attachment with multiple fallbacks
+      const attachContainer = () => {
+        if (document.body) {
           document.body.appendChild(container);
-        });
+          console.log('MediWidget Pro: Container attached to body');
+          return true;
+        } else if (document.documentElement) {
+          document.documentElement.appendChild(container);
+          console.log('MediWidget Pro: Container attached to documentElement');
+          return true;
+        }
+        return false;
+      };
+      
+      // Try immediate attachment
+      if (!attachContainer()) {
+        // Fallback 1: Wait for DOMContentLoaded
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', attachContainer);
+        } else {
+          // Fallback 2: Use setTimeout for delayed attachment
+          setTimeout(() => {
+            if (!attachContainer()) {
+              console.error('MediWidget Pro: Failed to attach container to DOM');
+            }
+          }, 100);
+        }
       }
     }
     return container;
@@ -412,15 +452,25 @@
       this.isOpen = false;
       this.scriptConfig = getScriptConfig(currentScript);
     }
-
 init() {
       this.container = createWidgetContainer();
-      positionWidget(this.container, this.scriptConfig.position || this.config.config.position);
       
-      // Ensure proper positioning for footer placement
+      // Enhanced positioning with footer compatibility
       if (this.container) {
+        positionWidget(this.container, this.scriptConfig.position || this.config.config.position);
+        
+        // Ensure proper positioning for footer placement
         this.container.style.position = 'fixed';
         this.container.style.zIndex = '999999';
+        
+        // Add footer-specific styling
+        this.container.style.display = 'block';
+        this.container.style.visibility = 'visible';
+        
+        console.log('MediWidget Pro: Container positioned successfully');
+      } else {
+        console.error('MediWidget Pro: Failed to create container');
+        return;
       }
       
       // Start with launcher if in launcher mode
@@ -437,9 +487,9 @@ init() {
         handleAppointment: () => this.handleAppointment(),
         handleCallback: () => this.handleCallback()
       };
-    }
+}
 
-renderLauncher() {
+    renderLauncher() {
       if (!this.container) return;
       this.container.innerHTML = createLauncherHTML(this.config);
       this.container.style.pointerEvents = 'auto';
@@ -494,16 +544,25 @@ renderLauncher() {
     }
   }
 
-  // Initialize widget
-  async function initializeWidget() {
+// Initialize widget with retry logic
+  async function initializeWidget(retryCount = 0) {
     if (isInitialized) return;
     
+    const maxRetries = 3;
+    const retryDelay = 1000;
+    
     try {
+      console.log(`MediWidget Pro: Initializing... (attempt ${retryCount + 1})`);
+      
       currentScript = findCurrentScript();
       const scriptConfig = getScriptConfig(currentScript);
       
       if (!scriptConfig.practiceId) {
         console.error('MediWidget Pro: Missing practice ID');
+        if (retryCount < maxRetries) {
+          console.log(`MediWidget Pro: Retrying in ${retryDelay}ms...`);
+          setTimeout(() => initializeWidget(retryCount + 1), retryDelay);
+        }
         return;
       }
 
@@ -522,17 +581,49 @@ renderLauncher() {
       
     } catch (error) {
       console.error('MediWidget Pro: Initialization failed:', error);
+      
+      if (retryCount < maxRetries) {
+        console.log(`MediWidget Pro: Retrying in ${retryDelay}ms...`);
+        setTimeout(() => initializeWidget(retryCount + 1), retryDelay);
+      } else {
+        console.error('MediWidget Pro: Max retries exceeded, initialization failed');
+      }
     }
   }
-
-  // Auto-initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeWidget);
-  } else {
-    // DOM is already loaded
-    setTimeout(initializeWidget, 100);
+// Enhanced auto-initialization for footer compatibility
+  function startInitialization() {
+    console.log('MediWidget Pro: Starting initialization...');
+    
+    // Multiple initialization strategies for footer placement
+    if (document.readyState === 'loading') {
+      // Strategy 1: Wait for DOMContentLoaded
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('MediWidget Pro: DOM loaded, initializing...');
+        setTimeout(initializeWidget, 100);
+      });
+    } else if (document.readyState === 'interactive') {
+      // Strategy 2: DOM is interactive, slight delay
+      setTimeout(() => {
+        console.log('MediWidget Pro: DOM interactive, initializing...');
+        initializeWidget();
+      }, 200);
+    } else {
+      // Strategy 3: DOM is complete
+      console.log('MediWidget Pro: DOM complete, initializing...');
+      setTimeout(initializeWidget, 100);
+    }
+    
+    // Strategy 4: Fallback initialization after longer delay
+    setTimeout(() => {
+      if (!isInitialized) {
+        console.log('MediWidget Pro: Fallback initialization...');
+        initializeWidget();
+      }
+    }, 2000);
   }
 
+  // Start initialization immediately
+  startInitialization();
   // Export for manual initialization if needed
   window.MediWidgetEmbed = {
     init: initializeWidget,
